@@ -1,0 +1,344 @@
+body{
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #03000f;
+    color: white;
+    font-family: Arial, sans-serif;
+    display:  flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+/*Cabeçalho*/
+.header{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width:100dvw;
+    background-color: #080029;
+}
+
+.header h1{
+    font-family: "Sriracha", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2em;
+    margin-top: 1;
+    margin-bottom: 1;
+}
+
+.header img{
+    width: 7%;
+}
+
+/*Excluir vários*/
+#header_excluir{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100dvw;
+    height: 0px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0;
+    font-size: 10px;
+    background-color: #000;
+    transition: height 0.1s;
+    cursor: default;
+}
+
+.texto_header{
+    display: flex;
+    gap: 30px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.botao_header{
+    margin-left: auto;
+    margin-right: 35px;
+}
+
+.fechar_excluir{
+    background-color: #000;
+    color: #fefefe;
+    font-size: 18px;
+    border: solid 2px #fefefe;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 30px;
+}
+
+.fechar_excluir:hover{
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+/*Seção das roletas*/
+.options{
+    display: inline-block;
+    flex-direction: row;
+    gap: 30px;
+    margin: 25px;
+    padding: 20px;
+    padding-left: 55px;
+    border: solid 4px;
+    border-radius: 20px;
+    border-color: #1100ac;
+    max-width: 90%;
+    min-height: 29dvw;
+    z-index: 0;
+}
+
+.arquivos{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 10px;
+}
+
+.arquivo{
+    display: flex;
+    border: solid 4px #1100ac;
+    border-radius: 20px;
+    width: 370px;
+    height: 170px;
+    padding: 0px;
+    justify-content: space-evenly;
+}
+
+.arquivo:hover{
+    transform: scale(1.01);
+    cursor: pointer;
+}
+
+.foto_roleta{
+    width: 150px;
+    height: 130px;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 15px;
+}
+
+.nome_completo{
+    display: none;
+}
+
+.menu_arquivo{
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    width: 30px;
+    height: 130px;
+    align-self: center;
+}
+
+.container_renomear, .container_excluir{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+}
+
+.container_excluir{ background-color: red;}
+.container_renomear{background-color: blue;}
+
+.editar_arquivo, .excluir_arquivo{
+    width: 70%;
+    height: 70%;
+}
+
+.container_renomear:hover, .container_excluir:hover{
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.arquivo h3{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-wrap: wrap;
+    width: 130px;
+}
+
+.checkmark{
+    position: absolute;
+    width: 180px;
+    height: 150px;
+    background-image: url(img/checkmark-white.png);
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+/*Botão de adicionar pastas*/
+.add{
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    position: relative;
+    top: 5px;
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 100px;
+    height: 100px;
+}
+
+.add_arquivo{
+    border: solid 4px;
+    border-color: #1100ac;
+    border-radius: 10px;
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+    color: white;
+    background-color: #080029;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.add_arquivo:hover{
+    background-color: #0f004d;
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+/*Context-menu*/
+.menu_options{
+    position: absolute;
+    top: 50%;
+    background-color: #0f004d;
+    z-index: 1000;
+    padding: 10px;
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.menu_options.show{
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.menu_options ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu_options li {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.menu_options li:hover{
+    background-color: #2400b3;
+}
+
+.menu_options .selecionar_todos{
+    border-bottom: solid;
+    border-color: #2d2550;
+}
+
+/*Janela de renomear roleta*/
+.janela_renomear{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    padding-top: 0px;
+    background-color: #080029;
+    border: solid 4px #1100ac;
+    z-index: 2;
+}
+
+.janela_renomear input{
+    outline: none;
+    caret-color: white;
+    font-size: medium;
+    color: #fefefe;
+    margin-bottom: 40px;
+    border: none;
+    border-bottom: solid 4px #1100ac;
+    background-color: transparent;
+    transition: background-color 0.3s;
+}
+
+.janela_renomear input:hover{
+    background-color: #1100ac;    
+}
+
+.janela_renomear p{
+    display: none;
+    margin-bottom: 40px;
+    color: red;
+}
+
+.janela_renomear h2{
+    margin-bottom: 50px;
+}
+
+.janela_renomear .botões, .janela_alterar .botões{
+    display: flex;
+    gap: 80px;
+}
+
+.janela_renomear button, .janela_alterar button{
+    padding: 10px;
+    border: solid 4px;
+    border-radius: 10px;
+    font-size: 18px;
+    color: white;
+    background-color: #080029;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.janela_alterar .pronto, .janela_renomear .pronto{
+    background-color: rgb(25, 139, 25);
+    border-color: rgb(25, 139, 25);
+}
+
+.janela_alterar .pronto:hover, .janela_renomear .pronto:hover{
+    background-color: rgb(33, 186, 33);
+    border-color: rgb(33, 186, 33);
+}
+.janela_alterar .fechar, .janela_renomear .fechar{
+    background-color: rgb(180, 0, 0);
+    border-color: rgb(180, 0, 0);
+}
+
+.janela_alterar .fechar:hover, .janela_renomear .fechar:hover{
+    background-color: rgb(230, 0, 0);
+    border-color: rgb(230, 0, 0);
+}
+
+/*Opacidade de fundo para quando aparecer a tela de renomear aparecer*/
+.opacidade{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}

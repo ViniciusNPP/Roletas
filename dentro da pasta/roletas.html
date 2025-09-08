@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta tal</title>
+    <link rel="stylesheet" href="roletas.css">
+    <link rel="icon" href="/menu/img/roleta2.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+25&family=Playwrite+NL:wght@100..400&family=Sriracha&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header">
+            <img src="img/roleta2.png">
+            <h1>Roleta</h1>
+        </div>
+
+        <div id="header_excluir">
+
+            <div class="texto_header">
+                <h1 id="contador_excluir">1</h1>
+                <h1 id="texto_selecionado">Selecionado(s)</h1>
+            </div>
+            
+            <div class="botao_header">
+                <button class="fechar_excluir" id="fechar_excluir">Fechar</button>
+                <button class="fechar_excluir" id="excluir_arquivos">Excluir</button>
+            </div>
+
+        </div>
+    </header>
+    
+    <section class="options" id="options">
+
+        <div class="arquivos" id="arquivos">
+            
+            <!--<div class="roleta" id="roleta-0">
+                
+                <img src="img/roleta2.png" class="foto_roleta">
+                <h3>Nome da roleta</h3>
+                <div class="menu_arquivo" id="menu_arquivo">
+                    <div class="container_editar container" id="container_editar">
+                        <img class="editar_roleta" src="img/Pen.png">
+                    </div>
+                    <div class="container_excluir container" id="container_excluir">
+                        <img class="excluir_roleta" src="img/Trash.png">
+                    </div>
+                </div>
+                <div class="checkmark" id="checkmark-1"></div>
+                <span class="nome_completo" id="nome_completo">Nome</span>
+
+            </div>-->
+
+        </div>
+
+        <nav class="menu_options" id="menu_options">
+            <ul>
+                <li class="selecionar_todos" id="selecionar_todos">Selecionar todos</li>
+                <li id="excluir_varios">Excluir vários</li>
+            </ul>
+        </nav>
+
+        <div class="add" id="add">
+            <button class="add_arquivo" id="add_arquivo">+</button>
+        </div>
+
+        <div class="janela_renomear" id="janela_renomear">
+            <h2>Nome da Roleta</h2>
+            <div class="inserção">
+                <input type="text" placeholder="Nome" autocomplete="off" class="inserir" id="inserir">
+                <p>Nome inválido, tente novamente.</p>
+            </div>
+            
+            <div class="botões" id="botões">
+                <button class="pronto" id="pronto"><strong>Pronto</strong></button>
+                <button class="fechar" id="fechar"><strong>Fechar</strong></button>
+            </div>
+        </div>
+
+        <div class="opacidade" id="opacidade"></div>
+
+    </section>
+    <script src="roletas.js"></script>
+</body>
+</html>

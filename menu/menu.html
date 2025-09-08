@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta</title>
+    <link rel="icon" href="img/roleta2.png" type="image/x-icon">
+    <link rel="stylesheet" href="menu.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+25&family=Playwrite+NL:wght@100..400&family=Sriracha&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header">
+            <img src="img/roleta2.png">
+            <h1>Roleta</h1>
+        </div>
+
+        <div id="header_excluir">
+
+            <div class="texto_header">
+                <h1 id="contador_excluir">1</h1>
+                <h1 id="texto_selecionado">Selecionado(s)</h1>
+            </div>
+            
+            <div class="botao_header">
+                <button class="fechar_excluir" id="fechar_excluir">Fechar</button>
+                <button class="fechar_excluir" id="excluir_pastas">Excluir</button>
+            </div>
+
+        </div>
+    </header>
+
+    <section class="options" id="options">
+
+        <div class="roletas" id="roletas">
+
+            <!--<div class="roleta" id="roleta-1">
+                <img src="img/roleta_marca.png">
+                <h3>Nome da roleta</h3>
+                <div class="checkmark" id="checkmark-1"></div>
+                <span class="nome_completo" id="nome_completo">Nome</span>
+            </div>-->
+
+        </div>
+
+        <div class="add" id="add">
+            <button class="add_roleta" id="add_roleta">+</button>
+        </div>
+
+        <nav class="menu_options" id="menu_options">
+            <ul>
+                <li class="botao_imagem" id="botao_imagem">Alterar imagem</li>
+                <li class="renomear" id="renomear">Renomear</li>
+                <li id="excluir">Excluir</li>
+                <li id="excluir_varios">Excluir vários</li>
+            </ul>
+        </nav>
+
+        <div class="janela_renomear" id="janela_renomear">
+            <h2>Nome da Roleta</h2>
+            <div class="inserção">
+                <input type="text" placeholder="Nome" autocomplete="off" class="inserir" id="inserir">
+                <p>Nome inválido, tente novamente.</p>
+            </div>
+            
+            <div class="botões" id="botões">
+                <button class="pronto" id="pronto"><strong>Pronto</strong></button>
+                <button class="fechar" id="fechar"><strong>Fechar</strong></button>
+            </div>
+        </div>
+
+        <section class="janela_alterar" id="janela_alterar">
+
+            <label class="alterar_img" id="alterar_img" for="enviar_img">
+                <input type="file" class="enviar_img" id="enviar_img" accept="image/*">
+                <span class="texto_alterar" id="texto_alterar">Escolha uma imagem</span>
+            </label>
+
+            <div class="botões">
+                <button class="pronto" id="mudar_img">Pronto</button>
+                <button class="fechar" id="fechar_img">Fechar</button>
+            </div>
+        </section>
+
+        <div class="opacidade" id="opacidade"></div>
+
+    </section>
+
+    <script src="menu.js" defer></script>
+</body>
+</html>

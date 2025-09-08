@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta</title>
+    <link rel="stylesheet" href="roleta.css">
+</head>
+<body>
+    <div id="resultado" class="oculto">
+        <div id="caixa">
+            <p id="itemSelecionado"></p>
+            <button id="fecharResultado">Fechar</button>
+        </div>
+    </div>
+    <div class="container" id="container">
+        <div id="seta"></div>
+        
+        <canvas class="roleta" id="roleta" width="800" height="800"></canvas>
+        <button class="btn" id="spinBtn">Girar</button>
+    </div>
+
+    <script src="roleta.js"></script>
+</body>
+</html>
