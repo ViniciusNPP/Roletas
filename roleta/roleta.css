@@ -2,89 +2,31 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    background-color: rgb(219, 219, 219);
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
   }
 
-.container {
-  transform: rotate(0deg);
-}
+  .sorteio{
+    border: 1px solid black;
+  }
 
-.btn {
-  border: transparent;
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #f0f0f0;
-  font-size: 30px;
-  font-family: Copperplate, Papyrus, fantasy;
-}
+  .botao{
+    all: unset;
+    border: 1px solid black;
+    padding: 10px;
+    cursor: pointer;
+    background-color: rgb(63, 63, 63);
+    color: white;;
+  }
 
-.btn:hover {
-  cursor: pointer;
-  background-color: #fff;
-  transform: scale(1.05) translate(-50%, -50%);
-  transition: transform 0.3s ease, background-color 0.3s ease;
-}
+  .botao:active {
+    background-color: rgb(97, 97, 97);
+  }
 
-.btn:active {
-  transform: scale(0.95) translate(-50%, -50%);
-}
-
-/* Seta fixa acima da roleta */
-#seta {
-  position: absolute;
-  top: calc(50% - 320px); /* Centraliza acima da roleta (400px é o raio da roleta) */
-  left: 50%;
-  transform: translate(-50%, 0); /* Centraliza horizontalmente e rotaciona para baixo */
-  width: 0;
-  height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 30px solid red; /* A seta agora aponta para baixo */
-  z-index: 10;
-}
-
-/* Fundo escuro e caixa de resultado */
-#resultado {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 20;
-}
-
-#resultado.oculto {
-  display: none;
-}
-
-#caixa {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-#caixa p {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-#caixa button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
+  .container-sorteio{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
