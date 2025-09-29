@@ -1,32 +1,39 @@
-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-  }
+.lootbox-container {
+  position: relative;
+  width: 300px;
+  height: 100px;
+  overflow: hidden;
+  border: 2px solid #333;
+  margin: 20px auto;
+}
 
-  .sorteio{
-    border: 1px solid black;
-  }
+.lootbox {
+  display: flex;
+}
 
-  .botao{
-    all: unset;
-    border: 1px solid black;
-    padding: 10px;
-    cursor: pointer;
-    background-color: rgb(63, 63, 63);
-    color: white;;
-  }
+.item {
+  min-width: 99px;
+  height: 100px;
+  font-size: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #ccc;
+}
 
-  .botao:active {
-    background-color: rgb(97, 97, 97);
-  }
+.marker {
+  position: absolute;
+  top: 0;
+  left: 100px; /* centro do container */
+  width: 100px;
+  height: 100%;
+  border: 2px solid red;
+  pointer-events: none;
+  box-sizing: border-box;
+}
 
-  .container-sorteio{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+.botao-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
