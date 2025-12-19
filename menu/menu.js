@@ -1,3 +1,5 @@
+import * as Data from '../Data/data.js';
+import * as Acao from '../Acoes/acoes.js';
 //console.log(JSON.parse(localStorage.getItem("pastas")));
 //Mostra o localStorage.
 
@@ -9,108 +11,36 @@ const menu_options = document.getElementById('menu_options');
 const adicionar = document.getElementById('add_roleta');
 const excluir = document.getElementById('excluir');
 const renomear = document.getElementById('renomear');
-let elementoAtual = null;
-let nome_roleta = null;
-let checkmark_id = null;
-let imagem_roleta = null;
-let contadorRoletas = JSON.parse(localStorage.getItem('roletas'))?.length + 1 || 1;
-let contadorNome = JSON.parse(localStorage.getItem('roletas'))?.length + 1 || 1;
-let aberto_excluir_varios = false;
+let estado = {
+    ID: 1,
+    contador_nome: 1,
+    elementoAtual: null,
+    nome_roleta: null,
+    checkmark_id: null,
+    imagem_roleta: null,
+    aberto_excluir_varios: false
+};
 
-carregarRoletas();
-
-//Função para salvar as roletas no localStorage
-function salvarRoletas() {
-    let roletasArray = [];
-    let roletasElementos = document.querySelectorAll('.roleta');
-
-    roletasElementos.forEach(roleta => {
-        let nome = roleta.querySelector('h3').textContent;
-        let nome_completo = roleta.querySelector('span').textContent;
-        let img = roleta.querySelector('img').src;
-        let id = roleta.id;
-        let arquivos = [];
-
-        roletasArray.push({arquivos, nome, img, nome_completo, id});
-
-        localStorage.setItem('pastas', JSON.stringify(roletasArray));
-    });
-}
-
+//#region Load
 //Função para carregar as roletas do localStorage
-function carregarRoletas() {
-    let roletasSalvas = localStorage.getItem('pastas');
+const pastas = JSON.parse(localStorage.getItem('pastas'));
+Data.carregarPastasLocal(roletas, pastas);
 
-    if (roletasSalvas) {
-        let roletasArray = JSON.parse(roletasSalvas);
-
-        roletasArray.forEach((roleta, index) => {
-            let novaRoleta = document.createElement('div');
-            novaRoleta.classList.add('roleta');
-            novaRoleta.id = `${roleta.id}`;
-
-            let img = document.createElement('img');
-            img.src = roleta.img;
-            novaRoleta.appendChild(img);
-
-            let nome = document.createElement('h3');
-            nome.textContent = roleta.nome;
-            novaRoleta.appendChild(nome);
-
-            let nome_completo = document.createElement('span');
-            nome_completo.textContent = roleta.nome_completo;
-            nome_completo.classList.add('nome_completo');
-            nome_completo.id = 'nome_completo';
-            novaRoleta.appendChild(nome_completo);
-
-            let checkmark = document.createElement('div');
-            checkmark.classList.add('checkmark');
-            checkmark.id = `checkmark-${index + 1}`;
-            novaRoleta.appendChild(checkmark);
-
-            roletas.appendChild(novaRoleta);
-        });
-
-        contadorRoletas = roletasArray.length + 1;
-        contadorNome = roletasArray.length + 1;
-    }
+if (pastas != null){
+    estado.ID = pastas.length + 1;
+    estado.contador_nome = pastas.length + 1;
 }
+//#endregion
 
-//Impede do menu padrão aparecer quando clicarmos com o botão direito
-//contextmenu = menu padrão
-//(e) = Evento com mouse
+//#region Context Menu
 roletas.addEventListener('contextmenu', function(e) {
     
-    if (e.target.classList.contains('roleta') || e.target.parentNode.classList.contains('roleta')){
-        
-        e.preventDefault();
-        menu_options.classList.remove('show');
-    
-    //Mostra o menu contexto na posição do cursor
-    setTimeout(() => {
-        menu_options.style.left = `${e.pageX}px`;
-        menu_options.style.top = `${e.pageY}px`;
-        menu_options.classList.add('show');
-        }, 80)
-    }
-    else{
-        menu_options.classList.remove('show');
-    }
-
-    if (e.target.classList.contains('roleta')){
-        elementoAtual = e.target;
-
-        nome_roleta = e.target.querySelector('span');
-        imagem_roleta = e.target.querySelector('img');
-        checkmark_id = e.target.querySelector('div');
-    }
-    else{
-        elementoAtual = document.getElementById(e.target.parentNode.id);
-
-        nome_roleta = e.target.parentNode.querySelector('span');
-        imagem_roleta = e.target.parentNode.querySelector('img');
-        checkmark_id = e.target.parentNode.querySelector('div');
-    }
+    //Atribuindo os valores retornados da função contextMenu para as variáveis
+    let dados = Acao.contextMenu(e, menu_options);
+    estado.elementoAtual = dados.elementoAtual;
+    estado.nome_roleta = dados.nome_roleta;
+    estado.imagem_roleta = dados.imagem_roleta;
+    estado.checkmark_id = dados.checkmark_id;
 
 });
 
@@ -120,40 +50,14 @@ document.addEventListener('click', function(e) {
         menu_options.classList.remove('show');
     }
 });
+//#endregion
 
+//#region Criar Roleta
 adicionar.addEventListener('click', function(){
     
-    //Cria uma variável para armazenar o novo elemento div
-    //Depois adiciona nessa variável o nome da classe e do id
-    const novaRoleta = document.createElement('div');
-    novaRoleta.classList.add('roleta');
-    novaRoleta.id = `roleta-${contadorRoletas++}`;
-
-    //Cria variável para imagem e adiciona nela a imagem e a adiciona na novaRoleta
-    const img = document.createElement('img');
-    img.src = 'img/roleta2.png';
-    novaRoleta.appendChild(img);
-
-    //Cria uma variável para o texto, adiciona o texto nela e a adiciona na novaRoleta
-    const nome = document.createElement('h3');
-    nome.textContent = `Roleta ${contadorNome++}`;
-    novaRoleta.appendChild(nome);
-
-    const nome_completo = document.createElement('span');
-    nome_completo.classList.add('nome_completo');
-    nome_completo.id = 'nome_completo';
-    nome_completo.textContent = nome.textContent;
-    novaRoleta.appendChild(nome_completo);
-
-    const checkmark = document.createElement('div');
-    checkmark.classList.add('checkmark');
-    checkmark.id = `checkmark-${contadorRoletas-1}`;
-    novaRoleta.appendChild(checkmark);
-
-    //Atribuindo a novaRoleta no div de roletas.
-    roletas.appendChild(novaRoleta);
-
-    salvarRoletas();
+    console.log(estado.ID);
+    Acao.criarPasta(roletas, estado, 'img/roleta2.png'); //Cria a a nova posta
+    Data.salvarPastasLocal(document.querySelectorAll('.roleta')); //Salva a nova pasta no localStorage
 
     //Animação para quando clicar no botão.
     adicionar.style.transform = 'scale(1)';
@@ -161,28 +65,26 @@ adicionar.addEventListener('click', function(){
         adicionar.style.transform = 'scale(1.05)';
     }, 80)
 
-    if(aberto_excluir_varios){
+    if(estado.aberto_excluir_varios){
         fecharExcluirVarios();
     }
 
 });
+//#endregion
 
+//#region Excluir roleta
 //Exclui a roleta
 excluir.addEventListener('click', function(){
-    if (elementoAtual){
-        roletas.removeChild(elementoAtual);
-        elementoAtual = null;
-        contadorNome--;
-        menu_options.classList.remove('show');
+    Acao.excluirPasta(roletas, estado);
+    
+    menu_options.classList.remove('show');
+    Data.salvarPastasLocal(document.querySelectorAll('.roleta'));
 
-        salvarRoletas();
-
-    }
-    if(aberto_excluir_varios){
-        fecharExcluirVarios();
-    }
+    if(estado.aberto_excluir_varios) fecharExcluirVarios();
 });
+//#endregion
 
+//#region Renomear
 const janela_renomear = document.getElementById('janela_renomear');
 const opacidade = document.getElementById('opacidade');
 const fechar = document.getElementById('fechar');
@@ -198,11 +100,11 @@ renomear.addEventListener('click', () => {
     menu_options.classList.remove('show');
     input_nome_roleta.placeholder = 'Nome';
 
-    input_nome_roleta.value = nome_roleta.textContent;
+    input_nome_roleta.value = estado.nome_roleta.textContent;
 
     opacidade.style.display = 'block';
 
-    if (aberto_excluir_varios){
+    if (estado.aberto_excluir_varios){
         fecharExcluirVarios();
     }
 });
@@ -223,10 +125,10 @@ fechar.addEventListener('click', () => {
 pronto.addEventListener('click', () => {
     if (input_nome_roleta.value){
 
-        nome_span = elementoAtual.querySelector('span');
+        nome_span = estado.elementoAtual.querySelector('span');
         nome_span.textContent = input_nome_roleta.value;
 
-        nome_exibido = elementoAtual.querySelector('h3');
+        nome_exibido = estado.elementoAtual.querySelector('h3');
 
         if (input_nome_roleta.value.length > 15){
             nome_exibido.textContent = input_nome_roleta.value.slice(0,14) + "...";
@@ -251,9 +153,11 @@ pronto.addEventListener('click', () => {
 
     input_nome_roleta.value = '';
 
-    salvarRoletas();
+    Data.salvarPastasLocal(document.querySelectorAll('.roleta'));
 });
+//#endregion
 
+//#region Excluir vários
 //Excluir vários
 const excluir_varios = document.getElementById('excluir_varios');
 const header_excluir = document.getElementById('header_excluir');
@@ -270,15 +174,15 @@ excluir_varios.addEventListener('click', () => {
     header_excluir.style.height = '100px';
     menu_options.classList.remove('show');
 
-    checkmark_id.style.opacity = '1';
-    elementoAtual.style.opacity = '0.5';
+    estado.checkmark_id.style.opacity = '1';
+    estado.elementoAtual.style.opacity = '0.5';
 
-    pastas_excluir.push(elementoAtual);
+    pastas_excluir.push(estado.elementoAtual);
     contador_pastas++;
     contador_excluir.textContent = `${contador_pastas}`;
     
-    aberto_excluir_varios = true;
-    elementoAtual.dataset.clicked = "true";
+    estado.aberto_excluir_varios = true;
+    estado.elementoAtual.dataset.clicked = "true";
 
 });
 
@@ -289,31 +193,31 @@ fechar_excluir.addEventListener('click', () => {
 excluir_pastas.addEventListener('click', () => {
     pastas_excluir.forEach((pasta) => {
         pasta.remove();
-        contadorNome--;
+        estado.contador_nome--;
 
     });
     fecharExcluirVarios();
-    salvarRoletas();
+    Data.salvarPastasLocal(document.querySelectorAll('.roleta'));
 })
 
 roletas.addEventListener('click', (e) => {
-    elementoAtual = e.target.classList.contains('roleta') ? e.target : e.target.parentNode;
+    estado.elementoAtual = e.target.classList.contains('roleta') ? e.target : e.target.parentNode;
 
-    if (aberto_excluir_varios && (e.target.classList.contains('roleta') || e.target.parentNode?.classList.contains('roleta'))) {
+    if (estado.aberto_excluir_varios && (e.target.classList.contains('roleta') || e.target.parentNode?.classList.contains('roleta'))) {
         
-        if (!elementoAtual.dataset.clicked || elementoAtual.dataset.clicked === "false") {
+        if (!estado.elementoAtual.dataset.clicked || estado.elementoAtual.dataset.clicked === "false") {
             // Seleciona
-            elementoAtual.querySelector('.checkmark').style.opacity = '1';
-            elementoAtual.style.opacity = '0.5';
-            elementoAtual.dataset.clicked = "true";
-            pastas_excluir.push(elementoAtual);
+            estado.elementoAtual.querySelector('.checkmark').style.opacity = '1';
+            estado.elementoAtual.style.opacity = '0.5';
+            estado.elementoAtual.dataset.clicked = "true";
+            pastas_excluir.push(estado.elementoAtual);
             contador_pastas++;
         } else {
             // Desseleciona
-            elementoAtual.querySelector('.checkmark').style.opacity = '0';
-            elementoAtual.style.opacity = '1';
-            elementoAtual.dataset.clicked = "false";
-            const index = pastas_excluir.indexOf(elementoAtual);
+            estado.elementoAtual.querySelector('.checkmark').style.opacity = '0';
+            estado.elementoAtual.style.opacity = '1';
+            estado.elementoAtual.dataset.clicked = "false";
+            const index = pastas_excluir.indexOf(estado.elementoAtual);
             if (index > -1) pastas_excluir.splice(index, 1);
             contador_pastas--;
         }
@@ -322,9 +226,9 @@ roletas.addEventListener('click', (e) => {
         if (contador_pastas === 0) fecharExcluirVarios();
     }
     //Ir para a página das roletas
-    else if (!aberto_excluir_varios && (e.target.closest('.roleta'))){
-        console.log(elementoAtual);
-        window.location.href = `/dentro da pasta/roletas.html?id=${elementoAtual.id}`;
+    else if (!estado.aberto_excluir_varios && (e.target.closest('.roleta'))){
+        console.log(estado.elementoAtual);
+        window.location.href = `/dentro da pasta/roletas.html?id=${estado.elementoAtual.id}`;
     }
 });
 
@@ -343,9 +247,11 @@ function fecharExcluirVarios(){
 
     pastas_excluir = [];
     contador_pastas = 0;
-    aberto_excluir_varios = false;
+    estado.aberto_excluir_varios = false;
 }
+//#endregion
 
+//#region Alterar Imagem
 //Janela de alterar imagem
 const botao_img = document.getElementById('botao_imagem');
 const pronto_alterar = document.getElementById('mudar_img');
@@ -366,11 +272,11 @@ pronto_alterar.addEventListener('click', () => {
     janela_alterar.style.display = 'none';
     opacidade.style.display = 'none';
 
-    imagem_roleta.src = img_alterar;
+    estado.imagem_roleta.src = img_alterar;
     mostrar_img.style.backgroundImage = 'none';
     texto.style.display = 'flex';
 
-    salvarRoletas();
+    Data.salvarPastasLocal(document.querySelectorAll('.roleta'));
 });
 
 fechar_alterar.addEventListener('click', () => {
@@ -397,3 +303,4 @@ input_img.addEventListener('change', () => {
     }
     
 })
+//#endregion

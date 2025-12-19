@@ -37,3 +37,45 @@
   justify-content: center;
   align-items: center;
 }
+
+.div-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gira-gira{
+  width: 0;
+  height: 0;
+  border-bottom: 100px solid red;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  transform: rotate();
+  transition: transform 2s ease-out;
+}
+
+.adaptavel-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.adaptavel{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  height: 100px;
+  border: solid 4px #333;
+}
+
+.filho {
+  border: solid 1px black;
+  width: 133px;
+  height: 100%;
+}
