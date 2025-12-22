@@ -23,7 +23,7 @@ function carregarPastasLocal(document, pastas){
                 <div class="roleta" id="${roleta.id}">
                     <img src="${roleta.img}" alt="">
                     <h3>${roleta.nome}</h3>
-                    <div class="checkmark" id="checkmark-${index + 1}"></div>
+                    <div class="checkmark" id="checkmark-${index + 1}" style="opacity: 0"></div>
                     <span class="nome_completo" id="nome_completo">${roleta.nome_completo}</span>
                 </div>
             `;
@@ -31,8 +31,4 @@ function carregarPastasLocal(document, pastas){
     }
 }
 
-function excluirPasta(){
-
-}
-
-export { salvarPastasLocal, carregarPastasLocal, excluirPasta };
+export { salvarPastasLocal, carregarPastasLocal};

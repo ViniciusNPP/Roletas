@@ -1,66 +1,39 @@
-function contextMenu(e, menu_options){
-    let nome_roleta;
-    let imagem_roleta;
-    let checkmark_id;
-    let elementoAtual;
-    
-    if (e.target.classList.contains('roleta') || e.target.parentNode.classList.contains('roleta')){
-        
-        e.preventDefault();
-        menu_options.classList.remove('show');
-    
-    //Mostra o menu contexto na posição do cursor
-    setTimeout(() => {
-        menu_options.style.left = `${e.pageX}px`;
-        menu_options.style.top = `${e.pageY}px`;
-        menu_options.classList.add('show');
-        }, 80)
-    }
-    else{
-        menu_options.classList.remove('show');
-    }
+import { salvarPastasLocal } from "../Data/data.js";
 
-    if (e.target.classList.contains('roleta')){
-        elementoAtual = e.target;
-
-        nome_roleta = e.target.querySelector('span');
-        imagem_roleta = e.target.querySelector('img');
-        checkmark_id = e.target.querySelector('div');
-    }
-    else{
-        elementoAtual = document.getElementById(e.target.parentNode.id);
-
-        nome_roleta = e.target.parentNode.querySelector('span');
-        imagem_roleta = e.target.parentNode.querySelector('img');
-        checkmark_id = e.target.parentNode.querySelector('div');
-    }
-
-    return {elementoAtual, nome_roleta, imagem_roleta, checkmark_id};
-}
-
-function criarPasta(div, estado, img, nome_completo = 'Roleta '){
+function criarPasta(UI, estado, img, nome_completo = 'Roleta '){
     if (nome_completo === 'Roleta '){
         nome_completo += estado.contador_nome;
     }
 
-    div.innerHTML += `
+    UI.roletas.innerHTML += `
                 <div class="roleta" id="roleta-${estado.ID}">
                     <img src="${img}" alt="">
                     <h3>Roleta ${estado.contador_nome}</h3>
-                    <div class="checkmark" id="checkmark-${estado.ID}"></div>
+                    <div class="checkmark" id="checkmark-${estado.ID}" style="opacity: 0"></div>
                     <span class="nome_completo" id="nome_completo">${nome_completo}</span>
                 </div>
             `;
     estado.ID++;
     estado.contador_nome++;
+
+    //Animação para quando clicar no botão.
+    UI.adicionar.style.transform = 'scale(1)';
+    setTimeout(() => {
+        UI.adicionar.style.transform = 'scale(1.05)';
+    }, 80);
+
+    salvarPastasLocal(document.querySelectorAll('.roleta'));
 }
 
-function excluirPasta(div, estado){
-    if (estado.elementoAtual){
-        div.removeChild(estado.elementoAtual);
-        estado.elementoAtual = null;
+function excluirPasta(UI, estado){
+    if (estado.elemento_atual){
+        UI.roletas.removeChild(estado.elemento_atual);
+        estado.elemento_atual = null;
         estado.contador_nome--;
     }
+
+    UI.menu_options.classList.remove('show');
+    salvarPastasLocal(document.querySelectorAll('.roleta'));
 }
 
-export { contextMenu, criarPasta, excluirPasta };
+export { criarPasta, excluirPasta };
