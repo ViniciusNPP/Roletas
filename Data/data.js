@@ -1,17 +1,43 @@
-function salvarPastasLocal(roleta_elementos){
-    let roletasArray = [];
+function salvarPastasLocal(id_pasta, elementos, dentro_da_pasta=false){
+    const pastas = JSON.parse(localStorage.getItem('pastas')) || [];
+    //const roleta = dentro_da_pasta && pastas != [] ? pastas.find(p => p.id === id_pasta).roletas : null;
+    
+    let roletas_array = [];
+    let nome, nome_completo, img, id, roletas;
 
-    roleta_elementos.forEach(roleta => {
-        let nome = roleta.querySelector('h3').textContent;
-        let nome_completo = roleta.querySelector('span').textContent;
-        let img = roleta.querySelector('img').src;
-        let id = roleta.id;
-        let roletas = [];
+    elementos.forEach(elem => {
+        if (pastas == []){
+            nome = elem.querySelector('h3').textContent;
+            nome_completo = elem.querySelector('span').textContent;
+            img = elem.querySelector('.foto').src;
+            id = elem.id;
+            roletas = dentro_da_pasta ? null : [];
+        } 
+        else {
+            const pastaExistente = pastas.find(pasta => pasta.id === elem.id);
+            if (pastaExistente) {
+                nome = pastaExistente.nome !== elem.querySelector('h3').textContent ?
+                    elem.querySelector('h3').textContent : 
+                    pastaExistente.nome
 
-        roletasArray.push({roletas, nome, img, nome_completo, id});
+                nome_completo = pastaExistente.nome_completo !== elem.querySelector('span').textContent ?
+                    elem.querySelector('span').textContent :
+                    pastaExistente.nome_completo
 
-        localStorage.setItem('pastas', JSON.stringify(roletasArray));
+                img = pastaExistente.img !== elem.querySelector('img').src ?
+                    elem.querySelector('img').src :
+                    pastaExistente.img
+
+                id = pastaExistente.id
+                roletas = pastaExistente.roletas;
+                
+            }
+        }
+
+        roletas_array.push({roletas, nome, img, nome_completo, id});
     });
+    
+    localStorage.setItem('pastas', JSON.stringify(roletas_array));
 }
 
 function carregarPastasLocal(document, pastas){
@@ -21,7 +47,7 @@ function carregarPastasLocal(document, pastas){
             
             document.innerHTML += `
                 <div class="roleta" id="${roleta.id}">
-                    <img src="${roleta.img}" alt="">
+                    <img src="${roleta.img}" class="foto">
                     <h3>${roleta.nome}</h3>
                     <div class="checkmark" id="checkmark-${index + 1}" style="opacity: 0"></div>
                     <span class="nome_completo" id="nome_completo">${roleta.nome_completo}</span>
@@ -31,4 +57,14 @@ function carregarPastasLocal(document, pastas){
     }
 }
 
-export { salvarPastasLocal, carregarPastasLocal};
+function salvarRoletaLocal(){
+
+}
+
+function carregarRoletaLocal(){
+
+}
+
+//CRAIR UMA FUNÇÃO SOMENTE PARA EXCLUIR ELEMENTOS DO LOCAL STORAGE
+
+export { salvarPastasLocal, carregarPastasLocal, salvarRoletaLocal, carregarRoletaLocal };

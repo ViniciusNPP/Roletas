@@ -1,4 +1,6 @@
-function contextMenu(e, menu_options, estado){
+import {estado} from '../menu/menu.js';
+
+function contextMenu(e, menu_options){
     if (e.target.classList.contains('roleta') || e.target.parentNode.classList.contains('roleta')){
         
         e.preventDefault();

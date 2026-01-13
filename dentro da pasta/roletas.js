@@ -3,20 +3,25 @@
 
 //localStorage.setItem("roleta-10", JSON.stringify([]));
 //Limpa o localStorage
+import * as Edicao from '../Acoes/edicao.js';
 
-const arquivos = document.getElementById('arquivos');
-const adicionar = document.getElementById('add_arquivo');
-const menu_options = document.getElementById('menu_options');
-let elemento_atual = null;
-let nome_arquivo = null;
-let aberto_excluir_varios;
-let contador_arquivo = 0;
-let contador_nome = 1;
+const UI = {
+    arquivos: document.getElementById('arquivos'),
+    menu_options: document.getElementById('menu_options'),
+    adicionar: document.getElementById('add_arquivo')
+}
+
+let estado = {
+    elemento_atual: null,
+    nome_arquivo: null,
+    contador_nome: 1,
+    aberto_excluir_varios: false
+}
 
 const pastas = JSON.parse(localStorage.getItem('pastas')) || [];
 const param = new URLSearchParams(window.location.search);
 const id_pasta = param.get("id");
-let pasta_atual;
+const pasta_atual =  pastas.find(pasta => pasta.id === id_pasta);
 
 carregar_roletas();
 
@@ -24,9 +29,7 @@ carregar_roletas();
 function salvar_roletas() {
     let todos_arquivos = document.querySelectorAll('.arquivo');
     
-    pasta_atual = pastas.find(pasta => pasta.id === id_pasta).arquivos;
-    
-    pasta_atual.length = 0;
+    pasta_atual = pastas.find(pasta => pasta.id === id_pasta).roletas;
     
     todos_arquivos.forEach(arquivo => {
         let id = arquivo.id;
@@ -43,7 +46,7 @@ function salvar_roletas() {
 function carregar_roletas() {
 
     if (!pasta_atual){
-        pasta_atual = pastas.find(pasta => pasta.id === id_pasta).arquivos;
+        pasta_atual = pastas.find(pasta => pasta.id === id_pasta).roletas;
         console.log(pasta_atual);
     }
 
@@ -54,7 +57,7 @@ function carregar_roletas() {
 
         let img = document.createElement('img');
         img.src = arquivo.img;
-        img.classList.add('foto_roleta')
+        img.classList.add('foto')
         novo_arquivo.appendChild(img);
 
         let nome = document.createElement('h3');
@@ -94,123 +97,77 @@ function carregar_roletas() {
         novo_arquivo.appendChild(checkmark);
 
         novo_arquivo.dataset.clicked = "false";
-        arquivos.appendChild(novo_arquivo);
+        UI.arquivos.appendChild(novo_arquivo);
     });
 }
 //Abre o context-menu
-arquivos.addEventListener('contextmenu', function(e) {
+UI.arquivos.addEventListener('contextmenu', function(e) {
     //console.log(e.target.closest('.roleta'));
     
     if (e.target.closest('.arquivo')){
         
         e.preventDefault();
-        menu_options.classList.remove('show');
+        UI.menu_options.classList.remove('show');
     
     //Mostra o menu contexto na posição do cursor
     setTimeout(() => {
-        menu_options.style.left = `${e.pageX}px`;
-        menu_options.style.top = `${e.pageY}px`;
-        menu_options.classList.add('show');
+        UI.menu_options.style.left = `${e.pageX}px`;
+        UI.menu_options.style.top = `${e.pageY}px`;
+        UI.menu_options.classList.add('show');
         }, 80)
     }
     else{
-        menu_options.classList.remove('show');
+        UI.menu_options.classList.remove('show');
     }
 
     if (e.target.closest('.arquivo')){
-        elemento_atual = e.target.closest('.arquivo');
+        estado.elemento_atual = e.target.closest('.arquivo');
 
-        nome_arquivo = elemento_atual.querySelector('span');
-        checkmark_id = elemento_atual.querySelector('.checkmark');
+        estado.nome_arquivo = estado.elemento_atual.querySelector('span');
+        checkmark_id = estado.elemento_atual.querySelector('.checkmark');
     }
 });
 
 // Esconde o menu contexto ao cliclar fora
 document.addEventListener('click', function(e) {
-    if (!menu_options.contains(e.target)) {
-        menu_options.classList.remove('show');
+    if (!UI.menu_options.contains(e.target)) {
+        UI.menu_options.classList.remove('show');
     }
 });
 
 //Cria uma nova roleta
-adicionar.addEventListener('click', function(){
-    if (aberto_excluir_varios) return;
+UI.adicionar.addEventListener('click', function(){
+    if (estado.aberto_excluir_varios) return;
     
-    let novo_arquivo = document.createElement('div');
-    novo_arquivo.classList.add('arquivo');
-    novo_arquivo.id = `arquivo-${Date.now()}`;
-
-    let img = document.createElement('img');
-    img.src = 'img/roleta2.png';
-    img.classList.add('foto_roleta')
-    novo_arquivo.appendChild(img);
-
-    let nome = document.createElement('h3');
-    nome.textContent = `Arquivo ${contador_nome++}`;
-    novo_arquivo.appendChild(nome);
-
-    let menu_arquivo = document.createElement('div');
-    menu_arquivo.classList.add('menu_arquivo');
-    menu_arquivo.id = 'menu_arquivo';
-
-    let container_renomear = document.createElement('div');
-    container_renomear.classList.add('container_renomear', 'container');
-    let renomear_arquivo = document.createElement('img');
-    renomear_arquivo.classList.add('editar_arquivo');
-    renomear_arquivo.src = 'img/Pen.png';
-    container_renomear.appendChild(renomear_arquivo);
-    menu_arquivo.appendChild(container_renomear);
-
-    let container_excluir = document.createElement('div');
-    container_excluir.classList.add('container_excluir', 'container');
-    let excluir_arquivo = document.createElement('img');
-    excluir_arquivo.classList.add('excluir_arquivo');
-    excluir_arquivo.src = 'img/Trash.png';
-    container_excluir.appendChild(excluir_arquivo);
-    menu_arquivo.appendChild(container_excluir);
-
-    novo_arquivo.appendChild(menu_arquivo);
-    
-    let nome_completo = document.createElement('span');
-    nome_completo.classList.add('nome_completo');
-    nome_completo.id = 'nome_completo';
-    nome_completo.textContent = nome.textContent;
-    novo_arquivo.appendChild(nome_completo);
-
-    let checkmark = document.createElement('div');
-    checkmark.classList.add('checkmark');
-    novo_arquivo.appendChild(checkmark);
-
-    novo_arquivo.dataset.clicked = "false";
-    arquivos.appendChild(novo_arquivo);
+    Edicao.criarRoleta('..img/roleta2.png');
     salvar_roletas();
 });
 
 /*Exclui ou Renomea arquivo*/
-arquivos.addEventListener('click', (e) => {
-    if (aberto_excluir_varios) return;
+UI.arquivos.addEventListener('click', (e) => {
+    if (estado.aberto_excluir_varios) return;
     
     if (e.target.closest('.container_excluir')){
         let excluir = e.target.closest('.container_excluir');
-        elemento_atual = excluir.closest('.arquivo');
+        estado.elemento_atual = excluir.closest('.arquivo');
 
-        arquivos.removeChild(elemento_atual);
+        UI.arquivos.removeChild(estado.elemento_atual);
 
-        contador_nome--;
+        estado.contador_nome--;
         
         salvar_roletas();
     }
 
     else if (e.target.closest('.container_renomear')){
         let renomear = e.target.closest('.container_renomear');
-        elemento_atual = renomear.closest('.arquivo');
+        estado.elemento_atual = renomear.closest('.arquivo');
 
         janela_renomear.style.display = 'flex';
         input_nome_arquivo.placeholder = 'Nome';
         opacidade.style.display = 'block';
         
-        nome_arquivo = elemento_atual.querySelector('span');
-        input_nome_arquivo.value = nome_arquivo.textContent;
+        estado.nome_arquivo = estado.elemento_atual.querySelector('span');
+        input_nome_arquivo.value = estado.nome_arquivo.textContent;
     }
     
 });
@@ -234,7 +191,7 @@ fechar.addEventListener('click', () => {
         input_nome_arquivo.style.marginBottom = '40px';
         invalido.style.display = 'none';
     }
-    elemento_atual = null;
+    estado.elemento_atual = null;
     //if (aberto_excluir_varios) fecharExcluirVarios();
 });
 
@@ -250,10 +207,10 @@ pronto.addEventListener('click', () => {
     if (input_nome_arquivo.value){
         
         //console.log(elemento_atual);
-        nome_span = elemento_atual.querySelector('.nome_completo');
+        nome_span = estado.elemento_atual.querySelector('.nome_completo');
         nome_span.textContent = input_nome_arquivo.value;
 
-        nome_exibido = elemento_atual.querySelector('h3');
+        nome_exibido = estado.elemento_atual.querySelector('h3');
 
         let stop = 44;
         if (nome_span.textContent.length > stop){
@@ -308,23 +265,23 @@ let arquivos_excluir = [];
 excluir_varios.addEventListener('click', () => {
     header_excluir.style.opacity = '1';
     header_excluir.style.height = '100px';
-    menu_options.classList.remove('show');
+    UI.menu_options.classList.remove('show');
 
-    elemento_atual.querySelector('.checkmark').style.opacity = '1';
-    elemento_atual.style.opacity = '0.5';
+    estado.elemento_atual.querySelector('.checkmark').style.opacity = '1';
+    estado.elemento_atual.style.opacity = '0.5';
 
-    arquivos_excluir.push(elemento_atual);
+    arquivos_excluir.push(estado.elemento_atual);
     contador_arquivos++;
     contador_excluir.textContent = `${contador_arquivos}`;
     
-    let temp = arquivos.querySelectorAll('.arquivo');
+    let temp = UI.arquivos.querySelectorAll('.arquivo');
     temp.forEach((arquivo) => {
         arquivo.dataset.clicked = "false";
     });
     
-    aberto_excluir_varios = true;
-    elemento_atual.dataset.clicked = "true";
-    elemento_atual.querySelector('.checkmark').style.opacity = '1';
+    estado.aberto_excluir_varios = true;
+    estado.elemento_atual.dataset.clicked = "true";
+    estado.elemento_atual.querySelector('.checkmark').style.opacity = '1';
 });
 
 fechar_excluir.addEventListener('click', () => {
@@ -334,32 +291,32 @@ fechar_excluir.addEventListener('click', () => {
 excluir_arquivos.addEventListener('click', () => {
     arquivos_excluir.forEach((arquivo) => {
         arquivo.remove();
-        contador_nome--;
+        estado.contador_nome--;
     });
     fecharExcluirVarios();
     salvar_roletas();
 })
 
-arquivos.addEventListener('click', (e) => {
-    elemento_atual = e.target.closest('.arquivo');
+UI.arquivos.addEventListener('click', (e) => {
+    estado.elemento_atual = e.target.closest('.arquivo');
 
-    if (aberto_excluir_varios && (e.target.closest('.arquivo'))) {
+    if (estado.aberto_excluir_varios && (e.target.closest('.arquivo'))) {
         
-        if (elemento_atual.dataset.clicked === "false") {
+        if (estado.elemento_atual.dataset.clicked === "false") {
             // Seleciona
-            elemento_atual.querySelector('.checkmark').style.opacity = '1';
-            elemento_atual.style.opacity = '0.5';
-            elemento_atual.dataset.clicked = "true";
+            estado.elemento_atual.querySelector('.checkmark').style.opacity = '1';
+            estado.elemento_atual.style.opacity = '0.5';
+            estado.elemento_atual.dataset.clicked = "true";
 
-            arquivos_excluir.push(elemento_atual);
+            arquivos_excluir.push(estado.elemento_atual);
             contador_arquivos++;
         } else {
             // Desseleciona
-            elemento_atual.querySelector('.checkmark').style.opacity = '0';
-            elemento_atual.style.opacity = '1';
-            elemento_atual.dataset.clicked = "false";
+            estado.elemento_atual.querySelector('.checkmark').style.opacity = '0';
+            estado.elemento_atual.style.opacity = '1';
+            estado.elemento_atual.dataset.clicked = "false";
 
-            let index = arquivos_excluir.indexOf(elemento_atual);
+            let index = arquivos_excluir.indexOf(estado.elemento_atual);
             if (index > -1) arquivos_excluir.splice(index, 1);
             contador_arquivos--;
         }
@@ -381,18 +338,18 @@ function fecharExcluirVarios(){
 
     arquivos_excluir = [];
     contador_arquivos = 0;
-    aberto_excluir_varios = false;
+    estado.aberto_excluir_varios = false;
 }
 
 //Seleciona todos
 const selecionar_todos = document.getElementById('selecionar_todos');
 
 selecionar_todos.addEventListener('click', () => {
-    let todas_arquivos = arquivos.querySelectorAll(".arquivo");
+    let todas_arquivos = UI.arquivos.querySelectorAll(".arquivo");
     
     header_excluir.style.opacity = '1';
     header_excluir.style.height = '100px';
-    menu_options.classList.remove('show');
+    UI.menu_options.classList.remove('show');
 
     todas_arquivos.forEach(arquivo => {
         if (arquivo.dataset.clicked === "false"){
@@ -405,5 +362,5 @@ selecionar_todos.addEventListener('click', () => {
         }
     });
     contador_excluir.textContent = contador_arquivos;
-    aberto_excluir_varios = true;
+    estado.aberto_excluir_varios = true;
 });

@@ -141,7 +141,7 @@ body{
     position: absolute;
     width: 180px;
     height: 150px;
-    background-image: url(img/checkmark-white.png);
+    background-image: url(../img/checkmark-white.png);
     background-size: 100px;
     background-position: center;
     background-repeat: no-repeat;
@@ -186,6 +186,10 @@ body{
     cursor: pointer;
 }
 
+.add_roleta:active{
+    transform: scale(0.95);
+}
+
 /*Context-menu*/
 .menu_options{
     position: absolute;
@@ -221,7 +225,7 @@ body{
     background-color: #2400b3;
 }
 
-.menu_options .renomear{
+.menu_options .botao_imagem{
     border-bottom: solid;
     border-color: #2d2550;
 }
