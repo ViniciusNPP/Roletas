@@ -96,14 +96,14 @@ body{
     z-index: 0;
 }
 
-.arquivos{
+.roletas{
     display: flex;
     flex-wrap: wrap;
     gap: 40px;
     padding: 10px;
 }
 
-.arquivo{
+.roleta{
     display: flex;
     border: solid 4px #1100ac;
     border-radius: 20px;
@@ -113,7 +113,7 @@ body{
     justify-content: space-evenly;
 }
 
-.arquivo:hover{
+.roleta:hover{
     transform: scale(1.01);
     cursor: pointer;
 }
@@ -130,7 +130,7 @@ body{
     display: none;
 }
 
-.menu_arquivo{
+.menu_roleta{
     display: flex;
     flex-direction: column;
     gap: 60px;
@@ -139,7 +139,7 @@ body{
     align-self: center;
 }
 
-.container_renomear, .container_excluir{
+.container_editar, .container_excluir{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -149,19 +149,19 @@ body{
 }
 
 .container_excluir{ background-color: red;}
-.container_renomear{background-color: blue;}
+.container_editar{background-color: blue;}
 
-.editar_arquivo, .excluir_arquivo{
+.editar_roleta, .excluir_roleta{
     width: 70%;
     height: 70%;
 }
 
-.container_renomear:hover, .container_excluir:hover{
+.container_editar:hover, .container_excluir:hover{
     transform: scale(1.05);
     cursor: pointer;
 }
 
-.arquivo h3{
+.roleta h3{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -195,7 +195,7 @@ body{
     height: 100px;
 }
 
-.add_arquivo{
+.add_roleta{
     border: solid 4px;
     border-color: #1100ac;
     border-radius: 10px;
@@ -207,13 +207,13 @@ body{
     transition: background-color 0.3s, transform 0.3s;
 }
 
-.add_arquivo:hover{
+.add_roleta:hover{
     background-color: #0f004d;
     transform: scale(1.05);
     cursor: pointer;
 }
 
-.add_arquivo:active{
+.add_roleta:active{
     transform: scale(0.95);
 }
 

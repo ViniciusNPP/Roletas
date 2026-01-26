@@ -81,7 +81,7 @@ body{
 }
 
 /*Menu*/
-/*Pasta de Roleta*/
+/*Pasta*/
 .options{
     display: inline-block;
     flex-direction: row;
@@ -96,14 +96,14 @@ body{
     min-height: 29dvw;
 }
 
-.roletas{
+.pastas{
     display: flex;
     flex-wrap: wrap;
     gap: 40px;
     padding: 10px;
 }
 
-.roleta{
+.pasta{
     padding: 0;
     display: inline-flex;
     flex-direction: column;
@@ -119,20 +119,20 @@ body{
     transition: transform 0.3s, opacity 0.3s;
 }
 
-.roleta img{
-    width: 75%;
-    height: 70%;
+.pasta img{
+    width: 105px;
+    height: 105px;
     z-index: 1;
     margin: 7px;
     border-radius: 20px;
 }
 
-.roleta h3{
+.pasta h3{
     margin: 0;
     z-index: 2;
 }
 
-.roleta:hover{
+.pasta:hover{
     transform: scale(1.05);
     cursor: pointer;
 }
@@ -168,7 +168,7 @@ body{
     height: 100px;
 }
 
-.add_roleta{
+.add_pasta{
     border: solid 4px;
     border-color: #1100ac;
     border-radius: 10px;
@@ -180,13 +180,13 @@ body{
     transition: background-color 0.3s, transform 0.3s;
 }
 
-.add_roleta:hover{
+.add_pasta:hover{
     background-color: #0f004d;
     transform: scale(1.05);
     cursor: pointer;
 }
 
-.add_roleta:active{
+.add_pasta:active{
     transform: scale(0.95);
 }
 
@@ -230,7 +230,7 @@ body{
     border-color: #2d2550;
 }
 
-/*Janela de renomear roleta*/
+/*Janela de renomear pasta*/
 .janela_renomear{
     display: none;
     flex-direction: column;

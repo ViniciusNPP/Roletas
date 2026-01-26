@@ -1,13 +1,10 @@
-import { salvarPastasLocal } from "../Data/data.js";
 import { excluir } from "./edicao.js";
 
-function excluirVarios(pastas_excluir, div, save) {
+function excluirVarios(pastas_excluir, div) {
     pastas_excluir.forEach((pasta) => {
-        excluir(pasta, div, save);
+        excluir(pasta, div);
         pasta.remove();
     });
-
-    salvarPastasLocal(document.querySelectorAll('.roleta'));
 }
 
 function desselecionarPasta(checkmark_id, pasta_atual, pastas_excluir) {

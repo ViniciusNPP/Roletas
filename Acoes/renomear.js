@@ -1,33 +1,33 @@
-import * as Data from '../Data/data.js';
+import { updateLocalStorage } from '../Data/data.js';
 
-function botaoFecharRenomear(input_nome_roleta, invalido){
-    input_nome_roleta.value = '';
+function botaoFecharRenomear(input_nome_pasta, invalido){
+    input_nome_pasta.value = '';
 
-    if (input_nome_roleta.style.marginBottom == '0px'){
-        input_nome_roleta.style.marginBottom = '40px';
+    if (input_nome_pasta.style.marginBottom == '0px'){
+        input_nome_pasta.style.marginBottom = '40px';
         invalido.style.display = 'none';
     }
 }
 
-function renomearRoleta(input_nome_roleta, nome_exibido, nome_completo, invalido){
-    if (input_nome_roleta.value){  
-        nome_completo.textContent = input_nome_roleta.value;
+function renomearPasta(input_nome_pasta, nome_exibido, nome_completo, invalido){
+    if (input_nome_pasta.value){  
+        nome_completo.textContent = input_nome_pasta.value;
 
-        nome_exibido.textContent = input_nome_roleta.value.length > 15
-            ? nome_exibido.textContent = input_nome_roleta.value.slice(0,14) + "..."
-            : nome_exibido.textContent = input_nome_roleta.value;
+        nome_exibido.textContent = input_nome_pasta.value.length > 15
+            ? nome_exibido.textContent = input_nome_pasta.value.slice(0,14) + "..."
+            : nome_exibido.textContent = input_nome_pasta.value;
 
-        if (input_nome_roleta.style.marginBottom === '0px'){
-            input_nome_roleta.style.marginBottom = '40px';
+        if (input_nome_pasta.style.marginBottom === '0px'){
+            input_nome_pasta.style.marginBottom = '40px';
             invalido.style.display = 'none';
         }
         }
     else{
-        input_nome_roleta.style.marginBottom = '0px';
+        input_nome_pasta.style.marginBottom = '0px';
         invalido.style.display = 'block';
     }
 
-    Data.salvarPastasLocal(document.querySelectorAll('.roleta'));
+    updateLocalStorage(nome_completo.parentElement, nome_completo.parentElement.id);
 }
 
-export { botaoFecharRenomear, renomearRoleta};
+export { botaoFecharRenomear, renomearPasta};

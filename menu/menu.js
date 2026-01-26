@@ -4,48 +4,50 @@ import * as CM from '../Acoes/context-menu.js';
 import * as Renomear from '../Acoes/renomear.js';
 import * as ExcluirVarios from '../Acoes/excluir-varios.js';
 import * as AlterarImagem from '../Acoes/alterar-imagem.js';
-//console.log(JSON.parse(localStorage.getItem("pastas")));
-//Mostra o localStorage.
-
-//localStorage.setItem("pastas", JSON.stringify([]));
-//Limpa o localStorage
 
 const UI = {
-    roletas: document.getElementById('roletas'),
+    pastas: document.getElementById('pastas'),
     menu_options: document.getElementById('menu_options'),
     janela_renomear: document.getElementById('janela_renomear'),
     opacidade: document.getElementById('opacidade'),
     header_excluir: document.getElementById('header_excluir'),
     janela_alterar: document.getElementById('janela_alterar'),
-    adicionar: document.getElementById('add_roleta')
+    adicionar: document.getElementById('add_pasta')
 };
 
 let estado = {
     ID: 1,
     contador_nome: 1,
     elemento_atual: null,
-    nome_roleta: null,
+    nome_pasta: null,
     checkmark_id: null,
-    imagem_roleta: null,
+    imagem_pasta: null,
     aberto_excluir_varios: false
 };
 //#region Load
-//Função para carregar as roletas do localStorage
-if (UI.roletas){
+//Função para carregar as pastas do localStorage
+if (UI.pastas){
 
     const pastas = JSON.parse(localStorage.getItem('pastas'));
-    Data.carregarPastasLocal(UI.roletas, pastas);
-    
-    //MUDAR LOGICA DOS IDS E CONTADORES           
+    Data.carregarPastasLocal(UI.pastas, pastas);
+    //console.log(Data.updateLocalStorage(pastas[0].id));
+     
     if (pastas != null) {
-        estado.ID = pastas.length + 1;
         estado.contador_nome = pastas.length + 1;
     }
     //#endregion
     
     //#region Context Menu
-    UI.roletas.addEventListener('contextmenu', function (e) {
+    UI.pastas.addEventListener('contextmenu', function (e) {
+        let pasta = e.target.closest('.pasta');
+        if (!pasta) return;
+
         CM.contextMenu(e, UI.menu_options);
+
+        estado.elemento_atual = pasta;
+        estado.nome_pasta = pasta.querySelector('span');
+        estado.imagem_pasta = pasta.querySelector('img');
+        estado.checkmark_id = pasta.querySelector('div');
     });
     
     // Esconde o menu contexto ao cliclar fora
@@ -56,17 +58,17 @@ if (UI.roletas){
     });
     //#endregion
     
-    //#region Criar Roleta
+    //#region Criar Pasta
     UI.adicionar.addEventListener('click', function () {
-        Acao.criarPasta(UI.roletas, estado.contador_nome, '../img/Pasta-roleta.png', '.roleta'); //Cria uma nova posta
+        Acao.criarPasta(UI.pastas, estado.contador_nome, '../img/Pasta-roleta.png'); //Cria uma nova posta
         estado.contador_nome++;
     });
     //#endregion
     
-    //#region Excluir roleta
-    //Exclui a roleta
+    //#region Excluir pasta
+    //Exclui a pasta
     UI.menu_options.querySelector('#excluir').addEventListener('click', function () {
-        Acao.excluir(estado.elemento_atual, UI.roletas, '.roleta');
+        Acao.excluir(estado.elemento_atual, UI.pastas);
 
         estado.elemento_atual = null;
         estado.contador_nome--;
@@ -75,7 +77,7 @@ if (UI.roletas){
     //#endregion
     
     //#region Renomear
-    const input_nome_roleta = UI.janela_renomear.querySelector('#inserir');
+    const input_nome_pasta = UI.janela_renomear.querySelector('#inserir');
     const invalido = UI.janela_renomear.querySelector('p');
     
     /*Abre a janela de renomear o nome*/
@@ -84,26 +86,27 @@ if (UI.roletas){
         UI.menu_options.classList.remove('show');
         UI.opacidade.style.display = 'block';
 
-        input_nome_roleta.value = estado.nome_roleta.textContent;
-    
-        /*Botão de fechar*/
-        UI.janela_renomear.querySelector('#fechar').addEventListener('click', () => {
-            Renomear.botaoFecharRenomear(input_nome_roleta, invalido);
+        input_nome_pasta.value = estado.nome_pasta.textContent;
+    });
+
+    /*Botão de fechar*/
+    UI.janela_renomear.querySelector('#fechar').addEventListener('click', () => {
+        Renomear.botaoFecharRenomear(input_nome_pasta, invalido);
+        UI.janela_renomear.style.display = 'none';
+        UI.opacidade.style.display = 'none';
+        console.log("Fechado");
+    });
+
+    /*Botão de pronto*/
+    UI.janela_renomear.querySelector('#pronto').addEventListener('click', () => {
+        const nome_exibido = estado.elemento_atual.querySelector('h3');
+        const nome_completo = estado.elemento_atual.querySelector('#nome_completo');
+        Renomear.renomearPasta(input_nome_pasta, nome_exibido, nome_completo, invalido);
+
+        if (input_nome_pasta.value){
             UI.janela_renomear.style.display = 'none';
             UI.opacidade.style.display = 'none';
-        });
-    
-        /*Botão de pronto*/
-        UI.janela_renomear.querySelector('#pronto').addEventListener('click', () => {
-            const nome_exibido = estado.elemento_atual.querySelector('h3');
-            const nome_completo = estado.elemento_atual.querySelector('#nome_completo');
-            Renomear.renomearRoleta(input_nome_roleta, nome_exibido, nome_completo, invalido);
-
-            if (input_nome_roleta.value){
-                UI.janela_renomear.style.display = 'none';
-                UI.opacidade.style.display = 'none';
-            }
-        });
+        }
     });
     //#endregion
     
@@ -113,7 +116,7 @@ if (UI.roletas){
     let pastas_excluir = [];
 
     function fecharExcluirVarios(){
-        const checkmark_class = UI.roletas.getElementsByClassName('checkmark');
+        const checkmark_class = UI.pastas.getElementsByClassName('checkmark');
     
         UI.header_excluir.style.opacity = '0';
         UI.header_excluir.style.height = '0px';
@@ -126,6 +129,7 @@ if (UI.roletas){
         });
 
         estado.aberto_excluir_varios = false;
+        pastas_excluir = [];
     }
 
     //Mostrar o menu de excluir vários
@@ -150,16 +154,17 @@ if (UI.roletas){
         estado.contador_nome -= pastas_excluir.length;
         UI.aberto_excluir_varios = false;
         
-        ExcluirVarios.excluirVarios(pastas_excluir, UI.roletas, '.roleta');
+        ExcluirVarios.excluirVarios(pastas_excluir, UI.pastas);
+        fecharExcluirVarios();
     })
     //#endregion
     
     //#region clique nas pastas
-    UI.roletas.addEventListener('click', (e) => {
-        const pasta_atual = e.target.classList.contains('roleta') ? e.target : e.target.closest('.roleta');
+    UI.pastas.addEventListener('click', (e) => {
+        const pasta_atual = e.target.closest('.pasta');
         if (!pasta_atual) return;
     
-        //Ir para a página das roletas
+        //Ir para a página das pastas
         if (!estado.aberto_excluir_varios) {
             window.location.href = `/dentro da pasta/roletas.html?id=${pasta_atual.id}`;
         }
@@ -189,7 +194,7 @@ if (UI.roletas){
         UI.janela_alterar.style.display = 'none';
         UI.opacidade.style.display = 'none';
 
-        AlterarImagem.aplicarAlteracaoImagem(img_alterar, mostrar_img, texto, estado.imagem_roleta);
+        AlterarImagem.aplicarAlteracaoImagem(img_alterar, mostrar_img, texto, estado.imagem_pasta);
     });
     
     UI.janela_alterar.querySelector('#fechar_img').addEventListener('click', () => {
@@ -203,5 +208,5 @@ if (UI.roletas){
         img_alterar = await AlterarImagem.alterarImagem(input_img, mostrar_img, texto);
     });
 }
-export { UI, estado };
+export {estado};
 //#endregion

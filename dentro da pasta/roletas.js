@@ -1,21 +1,21 @@
-//console.log(JSON.parse(localStorage.getItem("roleta-10")));
-//Mostra o localStorage.
-
-//localStorage.setItem("roleta-10", JSON.stringify([]));
-//Limpa o localStorage
 import * as Edicao from '../Acoes/edicao.js';
+import * as CM from '../Acoes/context-menu.js';
+import * as Renomear from '../Acoes/renomear.js';
+import * as Data from '../Data/data.js';
 
 const UI = {
-    arquivos: document.getElementById('arquivos'),
+    roletas: document.getElementById('roletas'),
     menu_options: document.getElementById('menu_options'),
-    adicionar: document.getElementById('add_arquivo')
+    adicionar: document.getElementById('add_roleta')
 }
 
 let estado = {
+    ID: 1,
     elemento_atual: null,
-    nome_arquivo: null,
+    nome_roleta: null,
     contador_nome: 1,
-    aberto_excluir_varios: false
+    aberto_excluir_varios: false,
+    checkmark_id: null
 }
 
 const pastas = JSON.parse(localStorage.getItem('pastas')) || [];
@@ -23,109 +23,22 @@ const param = new URLSearchParams(window.location.search);
 const id_pasta = param.get("id");
 const pasta_atual =  pastas.find(pasta => pasta.id === id_pasta);
 
-carregar_roletas();
-
-//Função para salvar as roletas localmente
-function salvar_roletas() {
-    let todos_arquivos = document.querySelectorAll('.arquivo');
-    
-    pasta_atual = pastas.find(pasta => pasta.id === id_pasta).roletas;
-    
-    todos_arquivos.forEach(arquivo => {
-        let id = arquivo.id;
-        let img = arquivo.querySelector('img').src;
-        let nome_completo = arquivo.querySelector('span').textContent;
-        let nome = arquivo.querySelector('h3').textContent;
-        
-        pasta_atual.push({id, img, nome_completo, nome});
-    });
-    localStorage.setItem('pastas', JSON.stringify(pastas));
-}
-
 //Carrega as roletas do localStorage
-function carregar_roletas() {
+ if (pasta_atual.dentro.length != 0){
+    Data.carregarRoletasLocal(UI.roletas, pasta_atual.dentro);
+ }
 
-    if (!pasta_atual){
-        pasta_atual = pastas.find(pasta => pasta.id === id_pasta).roletas;
-        console.log(pasta_atual);
-    }
-
-    pasta_atual.forEach(arquivo => {
-        let novo_arquivo = document.createElement('div');
-        novo_arquivo.classList.add('arquivo');
-        novo_arquivo.id = arquivo.id;
-
-        let img = document.createElement('img');
-        img.src = arquivo.img;
-        img.classList.add('foto')
-        novo_arquivo.appendChild(img);
-
-        let nome = document.createElement('h3');
-        nome.textContent = arquivo.nome;
-        novo_arquivo.appendChild(nome);
-
-        let menu_arquivo = document.createElement('div');
-        menu_arquivo.classList.add('menu_arquivo');
-        menu_arquivo.id = 'menu_arquivo';
-
-        let container_renomear = document.createElement('div');
-        container_renomear.classList.add('container_renomear', 'container');
-        let renomear_arquivo = document.createElement('img');
-        renomear_arquivo.classList.add('editar_arquivo');
-        renomear_arquivo.src = 'img/Pen.png';
-        container_renomear.appendChild(renomear_arquivo);
-        menu_arquivo.appendChild(container_renomear);
-
-        let container_excluir = document.createElement('div');
-        container_excluir.classList.add('container_excluir', 'container');
-        let excluir_arquivo = document.createElement('img');
-        excluir_arquivo.classList.add('excluir_arquivo');
-        excluir_arquivo.src = 'img/Trash.png';
-        container_excluir.appendChild(excluir_arquivo);
-        menu_arquivo.appendChild(container_excluir);
-
-        novo_arquivo.appendChild(menu_arquivo);
-        
-        let nome_completo = document.createElement('span');
-        nome_completo.classList.add('nome_completo');
-        nome_completo.id = 'nome_completo';
-        nome_completo.textContent = arquivo.nome_completo;
-        novo_arquivo.appendChild(nome_completo);
-
-        let checkmark = document.createElement('div');
-        checkmark.classList.add('checkmark');
-        novo_arquivo.appendChild(checkmark);
-
-        novo_arquivo.dataset.clicked = "false";
-        UI.arquivos.appendChild(novo_arquivo);
-    });
-}
+ //#region Context Menu
 //Abre o context-menu
-UI.arquivos.addEventListener('contextmenu', function(e) {
-    //console.log(e.target.closest('.roleta'));
-    
-    if (e.target.closest('.arquivo')){
-        
-        e.preventDefault();
-        UI.menu_options.classList.remove('show');
-    
-    //Mostra o menu contexto na posição do cursor
-    setTimeout(() => {
-        UI.menu_options.style.left = `${e.pageX}px`;
-        UI.menu_options.style.top = `${e.pageY}px`;
-        UI.menu_options.classList.add('show');
-        }, 80)
-    }
-    else{
-        UI.menu_options.classList.remove('show');
-    }
+UI.roletas.addEventListener('contextmenu', function(e) {
+    let roleta = e.target.closest('.roleta');
+    if (!roleta) return;
 
-    if (e.target.closest('.arquivo')){
-        estado.elemento_atual = e.target.closest('.arquivo');
+    CM.contextMenu(e, UI.menu_options);
 
-        estado.nome_arquivo = estado.elemento_atual.querySelector('span');
-        checkmark_id = estado.elemento_atual.querySelector('.checkmark');
-    }
+    estado.elemento_atual = roleta;
+    estado.nome_roleta = roleta.querySelector('span');
+    estado.checkmark_id = roleta.querySelector('.checkmark');
 });
 
 // Esconde o menu contexto ao cliclar fora
@@ -134,40 +47,68 @@ document.addEventListener('click', function(e) {
         UI.menu_options.classList.remove('show');
     }
 });
+//#endregion
 
+//#region Criar Roleta
 //Cria uma nova roleta
 UI.adicionar.addEventListener('click', function(){
     if (estado.aberto_excluir_varios) return;
     
-    Edicao.criarRoleta('..img/roleta2.png');
-    salvar_roletas();
-});
+    Edicao.criarRoleta(UI.roletas, estado.contador_nome, '../img/roleta2.png');
+    Data.createLocalStorage('roletas', true, id_pasta);
 
+    estado.contador_nome++;
+});
+//#endregion
+
+//#region Clique nas roletas
+UI.roletas.addEventListener('click', (e)=> {
+    if (!e.target.closest('.roleta')) return;
+
+    const roleta = e.target.closest('.roleta');
+    //#region Excluir
+    //Exclui a roleta ao clicar no botao de excluir
+    if (e.target.closest('.container_excluir') && !estado.aberto_excluir_varios){
+        Edicao.excluir(roleta, UI.roletas, false);
+        Data.deleteLocalStorage(id_pasta, true, roleta.id);
+
+        estado.contador_nome--;
+    }
+    //#endregion
+
+    //#region Renomear
+    //Renomeia a roleta ao clicar no botao de renomear
+    else if (e.target.closest('.container_editar') && !estado.aberto_excluir_varios){
+        //FAZER LOGICA DE RENOMEAR
+    }
+    //#endregion
+})
+//#endregion
 /*Exclui ou Renomea arquivo*/
-UI.arquivos.addEventListener('click', (e) => {
+UI.roletas.addEventListener('click', (e) => {
     if (estado.aberto_excluir_varios) return;
     
-    if (e.target.closest('.container_excluir')){
+    /* if (e.target.closest('.container_excluir')){
         let excluir = e.target.closest('.container_excluir');
-        estado.elemento_atual = excluir.closest('.arquivo');
+        estado.elemento_atual = excluir.closest('.roleta');
 
-        UI.arquivos.removeChild(estado.elemento_atual);
+        UI.roletas.removeChild(estado.elemento_atual);
 
         estado.contador_nome--;
         
         salvar_roletas();
-    }
+    } */
 
     else if (e.target.closest('.container_renomear')){
         let renomear = e.target.closest('.container_renomear');
-        estado.elemento_atual = renomear.closest('.arquivo');
+        estado.elemento_atual = renomear.closest('.roleta');
 
         janela_renomear.style.display = 'flex';
         input_nome_arquivo.placeholder = 'Nome';
         opacidade.style.display = 'block';
         
-        estado.nome_arquivo = estado.elemento_atual.querySelector('span');
-        input_nome_arquivo.value = estado.nome_arquivo.textContent;
+        estado.nome_roleta = estado.elemento_atual.querySelector('span');
+        input_nome_arquivo.value = estado.nome_roleta.textContent;
     }
     
 });
@@ -256,7 +197,7 @@ pronto.addEventListener('click', () => {
 const excluir_varios = document.getElementById('excluir_varios');
 const header_excluir = document.getElementById('header_excluir');
 const fechar_excluir = document.getElementById('fechar_excluir');
-const excluir_arquivos = document.getElementById('excluir_arquivos');
+const excluir_arquivos = document.getElementById('excluir_roletas');
 const texto_selecionado = document.getElementById('texto_selecionado');
 const contador_excluir = document.getElementById('contador_excluir');
 let contador_arquivos = 0;
@@ -274,7 +215,7 @@ excluir_varios.addEventListener('click', () => {
     contador_arquivos++;
     contador_excluir.textContent = `${contador_arquivos}`;
     
-    let temp = UI.arquivos.querySelectorAll('.arquivo');
+    let temp = UI.roletas.querySelectorAll('.roleta');
     temp.forEach((arquivo) => {
         arquivo.dataset.clicked = "false";
     });
@@ -297,10 +238,10 @@ excluir_arquivos.addEventListener('click', () => {
     salvar_roletas();
 })
 
-UI.arquivos.addEventListener('click', (e) => {
-    estado.elemento_atual = e.target.closest('.arquivo');
+UI.roletas.addEventListener('click', (e) => {
+    estado.elemento_atual = e.target.closest('.roleta');
 
-    if (estado.aberto_excluir_varios && (e.target.closest('.arquivo'))) {
+    if (estado.aberto_excluir_varios && (e.target.closest('.roleta'))) {
         
         if (estado.elemento_atual.dataset.clicked === "false") {
             // Seleciona
@@ -345,7 +286,7 @@ function fecharExcluirVarios(){
 const selecionar_todos = document.getElementById('selecionar_todos');
 
 selecionar_todos.addEventListener('click', () => {
-    let todas_arquivos = UI.arquivos.querySelectorAll(".arquivo");
+    let todas_arquivos = UI.roletas.querySelectorAll(".roleta");
     
     header_excluir.style.opacity = '1';
     header_excluir.style.height = '100px';
