@@ -1,81 +1,27 @@
-.lootbox-container {
-  position: relative;
-  width: 300px;
-  height: 100px;
-  overflow: hidden;
-  border: 2px solid #333;
-  margin: 20px auto;
+* {
+  margin: 0;
+  padding: 0;
+  font: black;
 }
 
-.lootbox {
-  display: flex;
-}
-
-.item {
-  min-width: 99px;
-  height: 100px;
-  font-size: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-right: 1px solid #ccc;
-}
-
-.marker {
-  position: absolute;
-  top: 0;
-  left: 100px; /* centro do container */
-  width: 100px;
+html, body {
   height: 100%;
-  border: 2px solid red;
-  pointer-events: none;
-  box-sizing: border-box;
 }
 
-.botao-container {
+body {
+  /* Prevent iOS rubber-band effect */
+  position: fixed;
+  width: 100%;
+
+  /* Prevent browser from handling touch events */
+  touch-action: none;
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.div-container{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.gira-gira{
-  width: 0;
-  height: 0;
-  border-bottom: 100px solid red;
-  border-bottom-left-radius: 50%;
-  border-bottom-right-radius: 50%;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  transform: rotate();
-  transition: transform 2s ease-out;
-}
-
-.adaptavel-container{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.adaptavel{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 400px;
-  height: 100px;
-  border: solid 4px #333;
-}
-
-.filho {
-  border: solid 1px black;
-  width: 133px;
-  height: 100%;
+.roleta-container {
+  height: 500px;
+  width: 500px;
 }

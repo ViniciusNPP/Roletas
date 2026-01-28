@@ -14,7 +14,6 @@ const UI = {
 }
 
 let estado = {
-    ID: 1,
     contador_nome: 1,
     elemento_atual: null,
     nome_roleta: null,
@@ -136,21 +135,23 @@ UI.roletas.addEventListener('click', (e)=> {
         if (roletas_excluir.length === 0 && estado.aberto_excluir_varios){ //fecha o HUD de excluir vários se não tiver mais pastas selecionadas
             fecharExcluirVarios();
         }
+        return;
     }
 
     //#region Excluir
     //Exclui a roleta ao clicar no botao de excluir
-    if (e.target.closest('.container_excluir') && !estado.aberto_excluir_varios){
+    else if (e.target.closest('.container_excluir')){
         Edicao.excluir(roleta, UI.roletas, false);
         Data.deleteLocalStorage(id_pasta, true, roleta.id);
 
         estado.contador_nome--;
+        return;
     }
     //#endregion
 
     //#region Renomear
     //Renomeia a roleta ao clicar no botao de renomear
-    else if (e.target.closest('.container_editar') && !estado.aberto_excluir_varios){
+    else if (e.target.closest('.container_editar')){
         //Abrir menu de renomear
         const input_nome_roleta = UI.janela_renomear.querySelector('#inserir');
         const invalido = UI.janela_renomear.querySelector('p');
@@ -166,6 +167,8 @@ UI.roletas.addEventListener('click', (e)=> {
             Renomear.botaoFecharRenomear(input_nome_roleta, invalido);
             UI.janela_renomear.style.display = 'none';
             UI.opacidade.style.display = 'none';
+            
+            return;
         }
 
         //Renomear roleta
@@ -181,8 +184,13 @@ UI.roletas.addEventListener('click', (e)=> {
 
                 Data.updateLocalStorage(estado.elemento_atual, id_pasta, true, estado.elemento_atual.id);
             }
+            return;
         }
     }
+    //#endregion
+    window.location.href = `/roleta/roleta.html?id=${estado.elemento_atual.id}`;
+    //#region Entrar na roleta
+    
     //#endregion
 });
 //#endregion
