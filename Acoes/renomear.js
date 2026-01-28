@@ -1,5 +1,3 @@
-import { updateLocalStorage } from '../Data/data.js';
-
 function botaoFecharRenomear(input_nome_pasta, invalido){
     input_nome_pasta.value = '';
 
@@ -26,8 +24,6 @@ function renomearPasta(input_nome_pasta, nome_exibido, nome_completo, invalido){
         input_nome_pasta.style.marginBottom = '0px';
         invalido.style.display = 'block';
     }
-
-    updateLocalStorage(nome_completo.parentElement, nome_completo.parentElement.id);
 }
 
 export { botaoFecharRenomear, renomearPasta};

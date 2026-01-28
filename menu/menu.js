@@ -101,7 +101,9 @@ if (UI.pastas){
     UI.janela_renomear.querySelector('#pronto').addEventListener('click', () => {
         const nome_exibido = estado.elemento_atual.querySelector('h3');
         const nome_completo = estado.elemento_atual.querySelector('#nome_completo');
+
         Renomear.renomearPasta(input_nome_pasta, nome_exibido, nome_completo, invalido);
+        Data.updateLocalStorage(estado.elemento_atual, estado.elemento_atual.id);
 
         if (input_nome_pasta.value){
             UI.janela_renomear.style.display = 'none';
@@ -156,7 +158,7 @@ if (UI.pastas){
         
         ExcluirVarios.excluirVarios(pastas_excluir, UI.pastas);
         fecharExcluirVarios();
-    })
+    });
     //#endregion
     
     //#region clique nas pastas

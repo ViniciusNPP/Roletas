@@ -20,7 +20,8 @@ function criarPasta(doc, cont, img, nome_completo = 'Pasta '){
 
     createLocalStorage('pastas');
 }
-//NAO EXCLUI QUANDO TODOS OS ELEMENTOS, DEIXA 1 PARA TRÁS
+//#endregion
+//#region Excluir
 function excluir(elem, div, save=true){
     if (elem){
         div.removeChild(elem);
@@ -34,7 +35,7 @@ function excluir(elem, div, save=true){
 
 //#region Roleta
 function criarRoleta(doc, cont, img, nome_completo = 'Pasta '){
-    if (nome_completo === 'Pasta '){
+    if (nome_completo === 'Roleta '){
         nome_completo += cont;
     }
 

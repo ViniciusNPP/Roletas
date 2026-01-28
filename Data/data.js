@@ -27,37 +27,38 @@ function updateLocalStorage(elemento, id_pasta, dentro_da_pasta = false, id_role
     let pastas = readLocalStorage(); //Todos os dados do localStorage
     let data = readLocalStorage(id_pasta, dentro_da_pasta, id_roleta); //Pega somente 1 pasta/roleta do localStorage
 
-    //Captura os elementos mais atuais da pasta/roleta
-    let nome, nome_completo, img, id;
-    nome = elemento.querySelector('h3').textContent;
-    nome_completo = elemento.querySelector('span').textContent;
-    img = elemento.querySelector('.foto').src;
-    id = elemento.id;
-
     //Faz a atualização dos dados conforme o que foi alterado
     Object.keys(data).forEach(key => {
         switch (key){
             case 'nome': 
-                data.nome = nome;
+                data.nome = elemento.querySelector('h3').textContent;
                 break;
             case 'nome_completo':
-                data.nome_completo = nome_completo;
+                data.nome_completo = elemento.querySelector('span').textContent;
                 break;
             case 'img':
-                data.img = img;
+                data.img = elemento.querySelector('.foto').src;
+                break;
+            case 'id':
+                data.id = elemento.id;
                 break;
         }
-    })
+    });
 
     //Atualiza o elemento no localStorage
-    pastas = pastas.map(p => {
-        if (p.id === data.id){
-            return data;
+    if (!dentro_da_pasta){
+        pastas = pastas.map(p => {
+            return p.id === data.id ? data : p;
+        });
+    }
+    else {
+        const index = pastas.findIndex(p => p.id === id_pasta); //acha o index da pasta em que a roleta está
+        if (index !== -1){
+            pastas[index].dentro = pastas[index].dentro.map(r => { //mapeia as roletas dentro da pasta específica
+                return r.id === data.id ? data : r;
+            });
         }
-        else {
-            return p;
-        }
-    });
+    }
     localStorage.setItem('pastas', JSON.stringify(pastas));
 }
 //#endregion

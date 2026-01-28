@@ -1,19 +1,23 @@
 import * as Edicao from '../Acoes/edicao.js';
 import * as CM from '../Acoes/context-menu.js';
 import * as Renomear from '../Acoes/renomear.js';
+import * as ExcluirVarios from '../Acoes/excluir-varios.js';
 import * as Data from '../Data/data.js';
 
 const UI = {
     roletas: document.getElementById('roletas'),
     menu_options: document.getElementById('menu_options'),
-    adicionar: document.getElementById('add_roleta')
+    adicionar: document.getElementById('add_roleta'),
+    opacidade: document.getElementById('opacidade'),
+    janela_renomear: document.getElementById('janela_renomear'),
+    header_excluir: document.getElementById('header_excluir')
 }
 
 let estado = {
     ID: 1,
+    contador_nome: 1,
     elemento_atual: null,
     nome_roleta: null,
-    contador_nome: 1,
     aberto_excluir_varios: false,
     checkmark_id: null
 }
@@ -61,11 +65,79 @@ UI.adicionar.addEventListener('click', function(){
 });
 //#endregion
 
+//#region Excluir vários
+const contador_excluir = UI.header_excluir.querySelector('#contador_excluir');
+let roletas_excluir = [];
+
+function fecharExcluirVarios(){
+    const checkmark_class = UI.roletas.getElementsByClassName('checkmark');
+
+    UI.header_excluir.style.opacity = '0';
+    UI.header_excluir.style.height = '0px';
+
+    for (let i = 0; i < checkmark_class.length; i++){
+        checkmark_class[i].style.opacity = '0';
+    }
+    roletas_excluir.forEach((roleta) => {
+        roleta.style.opacity = '1';
+    });
+
+    estado.aberto_excluir_varios = false;
+    roletas_excluir = [];
+}
+
+function abrirExcluirVarios(){
+    UI.header_excluir.style.opacity = '1';
+    UI.header_excluir.style.height = '100px';
+    UI.menu_options.classList.remove('show');
+
+    estado.checkmark_id.style.opacity = '1';
+    estado.elemento_atual.style.opacity = '0.5';
+    estado.aberto_excluir_varios = true;
+    
+    contador_excluir.textContent = `${roletas_excluir.length}`;
+}
+
+//Mostrar o menu de excluir vários
+UI.menu_options.querySelector('#excluir_varios').addEventListener('click', () => {
+    roletas_excluir.push(estado.elemento_atual);
+    abrirExcluirVarios();
+});
+
+//Fechar o menu de excluir vários
+UI.header_excluir.querySelector('#fechar_excluir').addEventListener('click', () => {
+    fecharExcluirVarios();
+});
+
+//Excluir as roletas selecionadas
+UI.header_excluir.querySelector('#excluir_roletas').addEventListener('click', () => {
+    estado.contador_nome -= roletas_excluir.length;
+    UI.aberto_excluir_varios = false;
+    
+    ExcluirVarios.excluirVarios(roletas_excluir, UI.roletas, false);
+    roletas_excluir.forEach(roleta => {
+        Data.deleteLocalStorage(id_pasta, true, roleta.id);
+    });
+    
+    fecharExcluirVarios();
+});
+//#endregion
+
 //#region Clique nas roletas
 UI.roletas.addEventListener('click', (e)=> {
     if (!e.target.closest('.roleta')) return;
 
     const roleta = e.target.closest('.roleta');
+    estado.elemento_atual = roleta;
+    estado.nome_roleta = roleta.querySelector('span');
+
+    if (estado.aberto_excluir_varios){
+        ExcluirVarios.verificarSelecao(estado.elemento_atual, roletas_excluir, estado.aberto_excluir_varios); //verifica se é valido selecionar/desselecionar a roleta
+        if (roletas_excluir.length === 0 && estado.aberto_excluir_varios){ //fecha o HUD de excluir vários se não tiver mais pastas selecionadas
+            fecharExcluirVarios();
+        }
+    }
+
     //#region Excluir
     //Exclui a roleta ao clicar no botao de excluir
     if (e.target.closest('.container_excluir') && !estado.aberto_excluir_varios){
@@ -79,229 +151,50 @@ UI.roletas.addEventListener('click', (e)=> {
     //#region Renomear
     //Renomeia a roleta ao clicar no botao de renomear
     else if (e.target.closest('.container_editar') && !estado.aberto_excluir_varios){
-        //FAZER LOGICA DE RENOMEAR
+        //Abrir menu de renomear
+        const input_nome_roleta = UI.janela_renomear.querySelector('#inserir');
+        const invalido = UI.janela_renomear.querySelector('p');
+
+        UI.janela_renomear.style.display = 'flex';
+        UI.menu_options.classList.remove('show');
+        UI.opacidade.style.display = 'block';
+
+        input_nome_roleta.value = estado.nome_roleta.textContent;
+
+        //Fechar menu de renomear
+        UI.janela_renomear.querySelector('#fechar').onclick = function(){
+            Renomear.botaoFecharRenomear(input_nome_roleta, invalido);
+            UI.janela_renomear.style.display = 'none';
+            UI.opacidade.style.display = 'none';
+        }
+
+        //Renomear roleta
+        UI.janela_renomear.querySelector('#pronto').onclick = function(){
+            const nome_exibido = estado.elemento_atual.querySelector('h3');
+            const nome_completo = estado.elemento_atual.querySelector('#nome_completo');
+            
+            Renomear.renomearPasta(input_nome_roleta, nome_exibido, nome_completo, invalido);
+    
+            if (input_nome_roleta.value){
+                UI.janela_renomear.style.display = 'none';
+                UI.opacidade.style.display = 'none';
+
+                Data.updateLocalStorage(estado.elemento_atual, id_pasta, true, estado.elemento_atual.id);
+            }
+        }
     }
     //#endregion
-})
+});
 //#endregion
-/*Exclui ou Renomea arquivo*/
-UI.roletas.addEventListener('click', (e) => {
+
+//#region Selecionar todos
+UI.menu_options.querySelector('#selecionar_todos').addEventListener('click', () => {
     if (estado.aberto_excluir_varios) return;
     
-    /* if (e.target.closest('.container_excluir')){
-        let excluir = e.target.closest('.container_excluir');
-        estado.elemento_atual = excluir.closest('.roleta');
-
-        UI.roletas.removeChild(estado.elemento_atual);
-
-        estado.contador_nome--;
-        
-        salvar_roletas();
-    } */
-
-    else if (e.target.closest('.container_renomear')){
-        let renomear = e.target.closest('.container_renomear');
-        estado.elemento_atual = renomear.closest('.roleta');
-
-        janela_renomear.style.display = 'flex';
-        input_nome_arquivo.placeholder = 'Nome';
-        opacidade.style.display = 'block';
-        
-        estado.nome_roleta = estado.elemento_atual.querySelector('span');
-        input_nome_arquivo.value = estado.nome_roleta.textContent;
-    }
-    
-});
-/*Abre a janela de renomear o nome*/
-const janela_renomear = document.getElementById('janela_renomear');
-const opacidade = document.getElementById('opacidade');
-const fechar = document.getElementById('fechar');
-const pronto = document.getElementById('pronto');
-const input_nome_arquivo = document.getElementById('inserir');
-const invalido = janela_renomear.querySelector('p');
-let nome_exibido;
-let nome_span;
-
-/*Botão de fechar*/
-fechar.addEventListener('click', () => {
-    janela_renomear.style.display = 'none';
-    opacidade.style.display = 'none';
-    input_nome_arquivo.value = '';
-
-    if (input_nome_arquivo.style.marginBottom == '0px'){
-        input_nome_arquivo.style.marginBottom = '40px';
-        invalido.style.display = 'none';
-    }
-    estado.elemento_atual = null;
-    //if (aberto_excluir_varios) fecharExcluirVarios();
-});
-
-/*Nomes para testar a parte de renomear arquivo
-coisa muito grandequeeuesperoquealcanceos44dígitiosparaoiffuncionar
-coisamuitograndequeeuesperoquealcanceos44dígitiosparaoif funcionar
-coisa muito grande que eu espero que alcance os 44 dígitios para o if funcionar
-*/
-
-/*Botão de pronto*/
-pronto.addEventListener('click', () => {
-    //console.log(input_nome_arquivo.value);
-    if (input_nome_arquivo.value){
-        
-        //console.log(elemento_atual);
-        nome_span = estado.elemento_atual.querySelector('.nome_completo');
-        nome_span.textContent = input_nome_arquivo.value;
-
-        nome_exibido = estado.elemento_atual.querySelector('h3');
-
-        let stop = 44;
-        if (nome_span.textContent.length > stop){
-            let palavras = nome_span.textContent.split(" ");
-
-            let nomeModificado = palavras.map(palavra => {
-                if (palavra.length > 13){
-                    return palavra.slice(0,11)+".";
-                }
-                else {
-                    return palavra
-                }
-            });
-
-            nomeModificado = nomeModificado.join(" ");
-
-            if(nomeModificado.length > stop){
-                nome_exibido.textContent = nomeModificado.slice(0,stop-3) + "...";
-            }
-            else {
-                nome_exibido.textContent = nomeModificado;
-            }
-        }
-        else {
-            nome_exibido.textContent = nome_span.textContent;
-        }
-
-        janela_renomear.style.display = 'none';
-        opacidade.style.display = 'none';
-        invalido.style.display = 'none';
-        input_nome_arquivo.style.marginBottom = '40px'
-    }
-    else{
-        input_nome_arquivo.style.marginBottom = '0px';
-        invalido.style.display = 'block';
-    }
-
-    input_nome_arquivo.value = '';
-    salvar_roletas();
-});
-
-//Excluir vários
-const excluir_varios = document.getElementById('excluir_varios');
-const header_excluir = document.getElementById('header_excluir');
-const fechar_excluir = document.getElementById('fechar_excluir');
-const excluir_arquivos = document.getElementById('excluir_roletas');
-const texto_selecionado = document.getElementById('texto_selecionado');
-const contador_excluir = document.getElementById('contador_excluir');
-let contador_arquivos = 0;
-let arquivos_excluir = [];
-
-excluir_varios.addEventListener('click', () => {
-    header_excluir.style.opacity = '1';
-    header_excluir.style.height = '100px';
-    UI.menu_options.classList.remove('show');
-
-    estado.elemento_atual.querySelector('.checkmark').style.opacity = '1';
-    estado.elemento_atual.style.opacity = '0.5';
-
-    arquivos_excluir.push(estado.elemento_atual);
-    contador_arquivos++;
-    contador_excluir.textContent = `${contador_arquivos}`;
-    
-    let temp = UI.roletas.querySelectorAll('.roleta');
-    temp.forEach((arquivo) => {
-        arquivo.dataset.clicked = "false";
+    abrirExcluirVarios();
+    UI.roletas.querySelectorAll(".roleta").forEach(roleta => {
+        ExcluirVarios.selecionarPasta(roleta.querySelector('.checkmark'), roleta, roletas_excluir);
     });
-    
-    estado.aberto_excluir_varios = true;
-    estado.elemento_atual.dataset.clicked = "true";
-    estado.elemento_atual.querySelector('.checkmark').style.opacity = '1';
+    contador_excluir.textContent = roletas_excluir.length;
 });
-
-fechar_excluir.addEventListener('click', () => {
-    fecharExcluirVarios();
-});
-
-excluir_arquivos.addEventListener('click', () => {
-    arquivos_excluir.forEach((arquivo) => {
-        arquivo.remove();
-        estado.contador_nome--;
-    });
-    fecharExcluirVarios();
-    salvar_roletas();
-})
-
-UI.roletas.addEventListener('click', (e) => {
-    estado.elemento_atual = e.target.closest('.roleta');
-
-    if (estado.aberto_excluir_varios && (e.target.closest('.roleta'))) {
-        
-        if (estado.elemento_atual.dataset.clicked === "false") {
-            // Seleciona
-            estado.elemento_atual.querySelector('.checkmark').style.opacity = '1';
-            estado.elemento_atual.style.opacity = '0.5';
-            estado.elemento_atual.dataset.clicked = "true";
-
-            arquivos_excluir.push(estado.elemento_atual);
-            contador_arquivos++;
-        } else {
-            // Desseleciona
-            estado.elemento_atual.querySelector('.checkmark').style.opacity = '0';
-            estado.elemento_atual.style.opacity = '1';
-            estado.elemento_atual.dataset.clicked = "false";
-
-            let index = arquivos_excluir.indexOf(estado.elemento_atual);
-            if (index > -1) arquivos_excluir.splice(index, 1);
-            contador_arquivos--;
-        }
-        
-        contador_excluir.textContent = contador_arquivos;
-        if (contador_arquivos === 0) fecharExcluirVarios();
-    }
-});
-
-function fecharExcluirVarios(){
-    header_excluir.style.opacity = '0';
-    header_excluir.style.height = '0px';
-
-    arquivos_excluir.forEach((pasta) => {
-        pasta.style.opacity = '1';
-        pasta.querySelector('.checkmark').style.opacity = '0';
-        pasta.dataset.clicked = "false";
-    });
-
-    arquivos_excluir = [];
-    contador_arquivos = 0;
-    estado.aberto_excluir_varios = false;
-}
-
-//Seleciona todos
-const selecionar_todos = document.getElementById('selecionar_todos');
-
-selecionar_todos.addEventListener('click', () => {
-    let todas_arquivos = UI.roletas.querySelectorAll(".roleta");
-    
-    header_excluir.style.opacity = '1';
-    header_excluir.style.height = '100px';
-    UI.menu_options.classList.remove('show');
-
-    todas_arquivos.forEach(arquivo => {
-        if (arquivo.dataset.clicked === "false"){
-            arquivo.querySelector(".checkmark").style.opacity = '1';
-            arquivo.dataset.clicked = "true";
-            arquivo.style.opacity = '0.5';
-            
-            arquivos_excluir.push(arquivo);
-            contador_arquivos++;
-        }
-    });
-    contador_excluir.textContent = contador_arquivos;
-    estado.aberto_excluir_varios = true;
-});
+//#endregion
