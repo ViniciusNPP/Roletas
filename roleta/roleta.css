@@ -4,24 +4,57 @@
   font: black;
 }
 
-html, body {
-  height: 100%;
+body {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-body {
-  /* Prevent iOS rubber-band effect */
-  position: fixed;
+header {
   width: 100%;
 
-  /* Prevent browser from handling touch events */
-  touch-action: none;
+  .menu-lista {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  .item-lista {
+    font-size: 25px;
+    transition: transform 0.25s;
+  }
+
+  .item-lista:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+  }
 }
 
 .roleta-container {
-  height: 500px;
-  width: 500px;
+  position: relative;
+  height: 90vw;
+  width: 90vw;
+  max-width: 500px;
+  max-height: 500px;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left:50%;
+  top: 50%;
+  transform: translate(-50%, 30%);
+
+  .botao-roleta{
+    position: absolute;
+    transition: transform 0.2s;
+  }
+
+  .botao-roleta:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    filter: brightness(110%);
+  }
 }
