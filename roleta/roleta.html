@@ -9,20 +9,38 @@
 <body>
   <header>
     <aside class="menu-roleta-container">
+
       <ul class="menu-lista">
-        <p class="configurações item-lista" id="configurações">☰</p>
-        <p class="itens item-lista" id="itens">←</p>
+        <p class="configurações botoes-menu" id="configurações">☰</p>
+        <p class="lista botoes-menu" id="item-lista">←</p>
       </ul>
     </aside>
-  </header>
-  <div class="roleta-container">
-    <canvas class="botao-roleta" width="100" height="130"></canvas>
-  </div>
-  <div class="configuracao-container">
 
-  </div>
-  <div class="items-container">
-    
+  </header>
+  <div class="conteudo-container">
+
+    <div class="configuracao-container menu">
+      <p>OI</p>
+    </div>
+
+    <div class="roleta-container">
+      <canvas class="botao-roleta" width="100" height="130"></canvas>
+    </div>
+
+    <div class="items-container menu">
+      <div class="itens-roleta">
+        <div class="item" id="item">
+          
+          <div id="cor-preview" class="cor-preview"></div>
+          <input id="nome-item" class="nome-item"></input>
+          <input id="chance-item" class="chance">
+          <buttom class="excluir-item" id="excluir-item">LIXO</buttom>
+          
+        </div>
+      </div>
+      <label class="adicionar-item">+</label>
+    </div>
+
   </div>
   <script type="module" src="roleta.js"></script>
   <script src="canvas/botao-roleta.js"></script>
