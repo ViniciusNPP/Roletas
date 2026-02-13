@@ -1,4 +1,4 @@
-import { deleteLocalStorage, createLocalStorage } from "../Data/data.js";
+import { deleteLocalStorage, createLocalStorage } from "./data.js";
 
 //#region Pasta
 function criarPasta(doc, cont, img, nome_completo = 'Pasta '){

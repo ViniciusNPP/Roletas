@@ -1,8 +1,8 @@
-import * as Edicao from '../Acoes/edicao.js';
-import * as CM from '../Acoes/context-menu.js';
-import * as Renomear from '../Acoes/renomear.js';
-import * as ExcluirVarios from '../Acoes/excluir-varios.js';
-import * as Data from '../Data/data.js';
+import * as Edicao from '../services/edicao.js';
+import * as CM from '../services/context-menu.js';
+import * as Renomear from '../services/renomear.js';
+import * as ExcluirVarios from '../services/excluir-varios.js';
+import * as Data from '../services/data.js';
 
 const UI = {
     roletas: document.getElementById('roletas'),

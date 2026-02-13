@@ -1,4 +1,4 @@
-import { updateLocalStorage } from '../Data/data.js';
+import { updateLocalStorage } from './data.js';
 
 function alterarImagem(input_img, mostrar_img, texto) {
     return new Promise((resolve) => {

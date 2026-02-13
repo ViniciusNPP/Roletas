@@ -1,9 +1,9 @@
-import * as Data from '../Data/data.js';
-import * as Acao from '../Acoes/edicao.js';
-import * as CM from '../Acoes/context-menu.js';
-import * as Renomear from '../Acoes/renomear.js';
-import * as ExcluirVarios from '../Acoes/excluir-varios.js';
-import * as AlterarImagem from '../Acoes/alterar-imagem.js';
+import * as Data from '../services/data.js';
+import * as Acao from '../services/edicao.js';
+import * as CM from '../services/context-menu.js';
+import * as Renomear from '../services/renomear.js';
+import * as ExcluirVarios from '../services/excluir-varios.js';
+import * as AlterarImagem from '../services/alterar-imagem.js';
 
 const UI = {
     pastas: document.getElementById('pastas'),
