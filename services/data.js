@@ -151,10 +151,10 @@ function carregarRoletasLocal(document, roletas){
                 <h3>${roleta.nome}</h3>
                 <div class="menu_roleta" id="menu_roleta">
                     <div class="container_editar container" id="container_editar">
-                        <img class="editar_roleta" src="img/Pen.png">
+                        <img class="editar_roleta" src="/img/Pen.png">
                     </div>
                     <div class="container_excluir container" id="container_excluir">
-                        <img class="excluir_roleta" src="img/Trash.png">
+                        <img class="excluir_roleta" src="/img/Trash.png">
                     </div>
                 </div>
                 <div class="checkmark" id="${roleta.id}" style="opacity: 0"></div>

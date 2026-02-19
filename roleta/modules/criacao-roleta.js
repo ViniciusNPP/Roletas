@@ -23,18 +23,25 @@ function getProps(){
 
 function createProps(lista_itens = ['item 1', 'item 2'], pesos = [1, 1]){
     for (let i = 0; i < lista_itens.length; i++){
-        const id = `${Date.now() + (Math.random() * 1000).toFixed(0)}`; //gera um id único para cada item
-        
         props.items.push({
             label: lista_itens[i],
             weight: pesos[i],
-            value: id
+            value: `${Date.now() + (Math.random() * 1000).toFixed(0)}` //gera um id único para cada item
         });
     }
     return props;
 }
 
-function excluirProps(itens_id){
+function addToProps(prop, item, peso){
+    prop.items.push({
+        label: item,
+        weight: peso,
+        value: `${Date.now() + (Math.random() * 1000).toFixed(0)}`
+    });
+    return prop;
+}
+
+function deleteProps(itens_id){
     if (Array.isArray(itens_id) && itens_id.length > 0) {
         props.items = props.items.filter(item => !itens_id.includes(item.value));
         return props;
@@ -81,4 +88,4 @@ async function girarRoleta(roleta, ease, duration, props, peso_total) {
     }
 }
 
-export {createProps, excluirProps, updateProps, getProps, createRoleta, girarRoleta};
+export {createProps, addToProps, deleteProps, updateProps, getProps, createRoleta, girarRoleta};
