@@ -17,6 +17,14 @@ let props = {
     }
 }
 
+function aplicarConfigRoleta(roleta){
+    roleta.isInteractive = false
+    roleta.itemLabelRadius = 0.6;
+    roleta.itemLabelRadiusMax = 0.35;
+    roleta.itemLabelFontSizeMax = 30;
+    roleta.itemLabelAlign = 'center';
+}
+
 function getProps(){
     return props;
 }
@@ -88,4 +96,4 @@ async function girarRoleta(roleta, ease, duration, props, peso_total) {
     }
 }
 
-export {createProps, addToProps, deleteProps, updateProps, getProps, createRoleta, girarRoleta};
+export {createProps, addToProps, deleteProps, updateProps, getProps, createRoleta, girarRoleta, aplicarConfigRoleta};

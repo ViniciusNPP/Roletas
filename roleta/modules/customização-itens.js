@@ -19,26 +19,27 @@ function alterarCor(){
 
 }
 
-function alterarNome(){
-
-}
-
-function alterarChance(texto){
-    if (!texto.includes(valors_invalidos)){ //verifica se o texto não contém caracteres inválidos
-        const chance = parseInt(texto);
-        
-        if (!isNaN(chance) || chance > 0){ //verifica se o texto é um número, se é maior que 0 e se tem menos de 4 caracteres (para não sumir no input)
-            //FAZER A LÓGICA PARA ATUALIZAR A CHANCE DO ITEM
-            return chance;
-        }
-        else if (isNaN(chance)) return texto.slice(0, -1);//Corta a parte inválida do texto
-        else if (chance <= 0) return "1"; //Retorna o valor padrão
+function alterarNome(roleta, props, nome_novo, id){
+    const item = props.items.find(item => item.value === id);
+    if (item){
+        item.label = nome_novo;
     }
-    return texto.slice(0, -1);
+
+    roleta.init(props); //Reinicializa a roleta para atualizar os nomes dos itens
 }
 
-function excluirItem(){
+function alterarChance(roleta, props, chance_nova, id){
+    const item = props.items.find(item => item.value === id);
+    if (item){
+        item.weight = chance_nova;
+    }
+    
+    roleta.init(props); //Reinicializa a roleta para atualizar as chances dos itens
+}
 
+function excluirItem(roleta, props, id){
+    props.items = props.items.filter(item => item.value !== id); //Remove o item do array de itens
+    roleta.init(props); //Reinicializa a roleta para atualizar os itens
 }
 
 function adicionarItem(){
