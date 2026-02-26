@@ -1,4 +1,5 @@
-const valors_invalidos = ["%", "$", ".", ",", "+", ";", ":", "!", "?", "(", ")", "[", "]", "{", "}", "|", "\\", "/", "*", "&", "^", "%", "$", "#", "@", "~", "`"];
+import * as Roleta from './roleta-config.js';
+import * as Util from './utils.js';
 
 function criarItem(div, nome, chance, id_item){
     if (div){
@@ -37,13 +38,21 @@ function alterarChance(roleta, props, chance_nova, id){
     roleta.init(props); //Reinicializa a roleta para atualizar as chances dos itens
 }
 
-function excluirItem(roleta, props, id){
+function excluirItem(roleta, props, container, id){
     props.items = props.items.filter(item => item.value !== id); //Remove o item do array de itens
+
+    container.remove();
+    Roleta.aplicarConfigRoleta(roleta);
+
     roleta.init(props); //Reinicializa a roleta para atualizar os itens
 }
 
-function adicionarItem(){
-
+function adicionarItem(roleta, props, container){
+    props = Roleta.addToProps(props, `Item ${props.items.length + 1}`, 1, Util.gerarId());
+    criarItem(container, `Item ${props.items.length}`, 1, props.items[props.items.length - 1].value);
+    
+    roleta.init(props);
+    Roleta.aplicarConfigRoleta(roleta);
 }
 
 export { criarItem, alterarCor, alterarNome, alterarChance, excluirItem, adicionarItem }

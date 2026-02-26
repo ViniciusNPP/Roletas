@@ -1,19 +1,13 @@
 import * as Roleta from './modules/roleta-config.js';
 import * as CustomItem from './modules/customização-itens.js';
+import * as Util from './modules/utils.js';
 import * as easing from './libs/easing.js';
 
 //#region VARIÁVEIS GLOBAIS
 const container = document.querySelector('.roleta-container'); //Onde a roleta é criada
 const container_itens = document.querySelector('.itens-roleta'); //Container das configurações dos itens
 const botao_adicionar = document.querySelector('#adicionar-item'); //Botão para adicionar itens
-const config_itens = { //Dicionário para armazenar as configurações dos itens
-    cor: null,
-    nome: null,
-    chance: null,
-    container: null
-};
-// Lista de caracteres proibidos para nomes de itens
-const caracteresProibidos = [
+const caracteresProibidos = [ // Lista de caracteres proibidos para nomes de itens
     "<", ">",       // Impede tags HTML (XSS)
     "/", "\\",      // Evita problemas com caminhos de diretório
     "{", "}",       // Evita confusão com objetos JSON
@@ -27,6 +21,7 @@ const caracteresProibidos = [
     ",", ".", "-", "+" // Caracteres que podem causar problemas de formatação ou validação
 ];
 
+let seletor_aberto = false;
 let props = Roleta.createProps(
     ['Maçã', 'Banana', 'Abobora'],
     [5, 3, 2]
@@ -49,113 +44,126 @@ let duration = 5000; //tempo que ficará girando
 Roleta.aplicarConfigRoleta(roleta);
 //#endregion
 
+//#region GIRAR ROLETA 
 //Cria um novo item para a roleta
 container.querySelector('.botao-roleta').addEventListener('click', () => {
     Roleta.girarRoleta(roleta, ease, duration, props, peso_total);
 });
-
-//Captura as configurações dos itens e atualiza o dicionário
-container_itens.addEventListener('click', (e) => {
-    const target = e.target.closest('.item');
-    if (!target) return;
-
-    config_itens.cor = window.getComputedStyle(target.querySelector('.cor-preview')).backgroundColor.match(/\d+/g);
-    config_itens.nome = target.querySelector('.nome-item').value == "" ? "Item" : target.querySelector('.nome-item').value;
-    config_itens.chance = target.querySelector('.chance').value == "" ? 1 : target.querySelector('.chance').value;
-    config_itens.container = target;
-});
+//#endregion
 
 //adiciona um novo item
+//#region ADICIONAR ITEM
 botao_adicionar.addEventListener('click', () => {
-    props = Roleta.addToProps(props, `Item ${props.items.length + 1}`, 1);
-    CustomItem.criarItem(container_itens, `Item ${props.items.length}`, 1, props.items[props.items.length - 1].value);
+    CustomItem.adicionarItem(roleta, props, container_itens);
+    peso_total += 1;
 });
+//#endregion
 
-//atualiza o nome do item
-document.querySelectorAll('.nome-item').forEach(input => {
-    input.addEventListener('input', (e) => {
-        //FAZER LÓGICA PARA ATUALIZAR O LABEL DO ITEM
-    });
+//#region CLICK
+container_itens.addEventListener('click', (e) => {
+    const target = e.target;
+    const container = target.closest('.item');
+    if (!container) return;
+
+    // 1. Ação de Excluir Item
+    const btnExcluir = target.closest('.excluir-item');
+    if (btnExcluir) {
+        if (props.items.length <= 2) return; // Segurança: mínimo de 2 itens
+
+        const id_item = container.id.split("-")[1];
+        CustomItem.excluirItem(roleta, props, container, id_item);
+        return;
+    }
+
+    // 2. Ação de Abrir Seletor de Cor (Preview)
+    const corPreview = target.closest('.cor-preview');
+    if (corPreview && !seletor_aberto) {
+        var colorPicker = new iro.ColorPicker(corPreview, {
+            width: 150,
+            color: '#f00'
+        });
+        seletor_aberto = true;
+    }
 });
+//#endregion
 
-//#region CHANCE ITEM
-//atualiza a chance do item
-document.querySelectorAll('.chance').forEach(input => {
-    input.addEventListener('keydown', (e) => {
-        const teclas_inválidas = caracteresProibidos.includes(e.key);
+//#region KEYDOWN
+container_itens.addEventListener('keydown', (e) => {
+    const target = e.target;
+    const isNome = target.classList.contains('nome-item');
+    const isChance = target.classList.contains('chance');
+
+    if (!isNome && !isChance) return;
+
+    // Atalho comum: Enter faz o blur
+    if (e.key === "Enter") {
+        target.blur();
+        return;
+    }
+
+    // Lógica para CHANCE
+    if (isChance) {
+        const teclas_invalidas = caracteresProibidos.includes(e.key);
         const e_numero = e.key >= "0" && e.key <= "9";
         
-        if (teclas_inválidas || (e_numero && e.target.value.length >= 3)){ //permite somente números e limita a 3 caracteres para não sumir no input
+        // Bloqueia caracteres proibidos ou estouro de tamanho (3 dígitos)
+        if (teclas_invalidas || (e_numero && target.value.length >= 3)) {
             e.preventDefault();
         }
-
-        else if (e.target.value == "0"){ //Substitui o 0 por qualquer outro número que o usuário digitar
-            e.target.value = e.key;
+        // Substitui o 0 inicial pelo novo número
+        else if (target.value === "0" && e_numero) {
+            target.value = e.key;
             e.preventDefault();
         }
+    }
 
-        else if (e.key == "Enter"){
-            e.target.blur(); //Simula o evento de sair do campo para atualizar o weight do item
-        }
-    });
-
-    input.addEventListener('blur', (e) => { //Evento para toda vez que sair do campo; Se o campo for 0 ou vazio, retorna para 1
-        if (e.target.value == "" || e.target.value == "0"){
-            e.target.value = 1;
-            
-        }
-        const chance_velha = props.items.find(item => item.value == e.target.closest('.item').id.split("-")[1]).weight; //Encontra a chance antiga do item
-        if (chance_velha == e.target.value) return; //Se a chance for igual a antiga, não precisa atualizar
-
-        CustomItem.alterarChance(roleta, props, parseInt(e.target.value), config_itens.container.id.split("-")[1]); //atualiza o weight do item para 1
-        peso_total += parseInt(e.target.value) - parseInt(chance_velha); //atualiza o peso total da roleta
-        
-        Roleta.aplicarConfigRoleta(roleta); //Reaplica as configurações, pois ela perde as configurações personalizadas após o init
-    });
-});
-//#endregion
-
-//#region NOME ITEM
-document.querySelectorAll('.nome-item').forEach(input => {
-    input.addEventListener('keydown', (e) => {
-        const teclas_inválidas = caracteresProibidos.includes(e.key);
+    // Lógica para NOME
+    if (isNome) {
         const tamanho_maximo = 20;
-
-        if (e.key == "Enter"){
-            e.target.blur();
-            return;
+        const teclas_invalidas = caracteresProibidos.includes(e.key);
+        // Bloqueia se atingir limite e não for tecla de controle (e.key.length === 1)
+        if (teclas_invalidas || (target.value.length >= tamanho_maximo && e.key.length === 1)) {
+            e.preventDefault();
         }
-        
-        if (teclas_inválidas || (e.target.value.length >= tamanho_maximo && e.key.length == 1)) e.preventDefault();
-    });
-
-    input.addEventListener('blur', (e) => {
-        const container_id = e.target.closest('.item').id; //evitar usar o config_items aqui por acontecer primeiro que o 'click'
-        const id_item = container_id.split("-")[1];
-        const nome_antigo = props.items.find(item => item.value == id_item).label; //Encontra o nome antigo do item para retornar caso o campo fique vazio
-
-        if (e.target.value == ""){
-            e.target.value = nome_antigo;
-            return;
-        }
-        else if (e.target.value == nome_antigo) return; //Se o nome for igual ao antigo, não precisa atualizar
-        CustomItem.alterarNome(roleta, props, e.target.value, id_item);
-
-        Roleta.aplicarConfigRoleta(roleta); //Reaplica as configurações, pois ela perde as configurações personalizadas após o init
-    });
+    }
 });
 //#endregion
 
-//#region EXCLUIR ITEM
-document.querySelectorAll('.excluir-item').forEach(botao => {
-    botao.addEventListener('click', (e) => {
-        if(props.items.length == 2) return; //impede do usuário excluir caso haja somente 2 items
+//#region BLUR
+container_itens.addEventListener('blur', (e) => {
+    const target = e.target;
+    const container = target.closest('.item');
+    if (!container) return;
 
-        const id_item = e.target.closest('.item').id.split("-")[1];
-        CustomItem.excluirItem(roleta, props, id_item);
-        e.target.closest('.item').remove();
+    const id_item = container.id.split("-")[1];
 
-        Roleta.aplicarConfigRoleta(roleta); //Reaplica as configurações, pois ela perde as configurações personalizadas após o init
-    });
-});
+    // 1. Validação de CHANCE no Blur
+    if (target.classList.contains('chance')) {
+        if (target.value === "" || target.value === "0") {
+            target.value = 1;
+        }
+
+        const chance_velha = props.items.find(item => item.value == id_item).weight;
+        if (chance_velha == target.value) return;
+
+        CustomItem.alterarChance(roleta, props, parseInt(target.value), id_item);
+        peso_total += parseInt(target.value) - parseInt(chance_velha);
+        Roleta.aplicarConfigRoleta(roleta);
+    }
+
+    // 2. Validação de NOME no Blur
+    if (target.classList.contains('nome-item')) {
+        const nome_antigo = props.items.find(item => item.value == id_item).label;
+
+        if (target.value === "") {
+            target.value = nome_antigo;
+            return;
+        }
+        
+        if (target.value === nome_antigo) return;
+
+        CustomItem.alterarNome(roleta, props, target.value, id_item);
+        Roleta.aplicarConfigRoleta(roleta);
+    }
+}, true); // O 'true' é vital aqui para o blur funcionar via delegação
 //#endregion

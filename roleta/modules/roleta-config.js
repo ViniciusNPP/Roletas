@@ -1,4 +1,5 @@
 import {Wheel} from 'https://cdn.jsdelivr.net/npm/spin-wheel@5.0.2/dist/spin-wheel-esm.js';
+import * as Util from './utils.js'
 
 let girando = false;
 let props = {
@@ -34,17 +35,17 @@ function createProps(lista_itens = ['item 1', 'item 2'], pesos = [1, 1]){
         props.items.push({
             label: lista_itens[i],
             weight: pesos[i],
-            value: `${Date.now() + (Math.random() * 1000).toFixed(0)}` //gera um id único para cada item
+            value: `${Util.gerarId()}` //gera um id único para cada item
         });
     }
     return props;
 }
 
-function addToProps(prop, item, peso){
+function addToProps(prop, item, peso, id){
     prop.items.push({
         label: item,
         weight: peso,
-        value: `${Date.now() + (Math.random() * 1000).toFixed(0)}`
+        value: `${id}`
     });
     return prop;
 }
