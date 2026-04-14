@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roleta</title>
-    <link rel="icon" href="img\roleta2.png" type="image/x-icon">
-    <link rel="stylesheet" href="roleta.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roleta</title>
+  <link rel="icon" href="img\roleta2.png" type="image/x-icon">
+  <link rel="stylesheet" href="roleta.css">
 </head>
+
 <body>
   <header>
     <aside class="menu-roleta-container">
@@ -43,8 +45,30 @@
     </div>
 
   </div>
+  <div class="color-picker" id="color-picker">
+    <div class="container-selector-color">
+      
+      <div id="container-color-picker" , class="color-picker-container"></div>
+      <div class="container-input-color input-color" id="container-input-rgb">
+        <span class="label-rgb">R</span><input type="text" autocomplete="off" id="input-rgb-red" class="input-rgb">
+        <span class="label-rgb">G</span><input type="text" autocomplete="off" id="input-rgb-green" class="input-rgb">
+        <span class="label-rgb">B</span><input type="text" autocomplete="off" id="input-rgb-blue" class="input-rgb">
+      </div>
+
+      <div class="input-hex input-color" id="input-hex">
+  
+      </div>
+
+    </div>
+    <div class="container-button">
+      <button class="button-save-color button-color-picker" id="button-save-color">Salvar</button>
+      <button class="button-cancel-color button-color-picker" id="button-cancel-color">Cancelar</button>
+    </div>
+
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
   <script type="module" src="roleta.js"></script>
   <script src="canvas/botao-roleta.js"></script>
 </body>
+
 </html>
