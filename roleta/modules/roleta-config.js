@@ -18,12 +18,12 @@ let props = {
     }
 }
 
-function aplicarConfigRoleta(roleta){
-    roleta.isInteractive = false
-    roleta.itemLabelRadius = 0.6;
-    roleta.itemLabelRadiusMax = 0.35;
-    roleta.itemLabelFontSizeMax = 30;
-    roleta.itemLabelAlign = 'center';
+function aplicarConfigRoleta(roleta, isInteractive = false, itemLabelRadius = 0.6, itemLabelRadiusMax = 0.35, itemLabelFontSizeMax = 30, itemLabelAlign = 'center') {
+    roleta.isInteractive = isInteractive
+    roleta.itemLabelRadius = itemLabelRadius;
+    roleta.itemLabelRadiusMax = itemLabelRadiusMax;
+    roleta.itemLabelFontSizeMax = itemLabelFontSizeMax;
+    roleta.itemLabelAlign = itemLabelAlign;
 }
 
 function getProps(){

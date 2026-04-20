@@ -7,6 +7,10 @@
   <title>Roleta</title>
   <link rel="icon" href="img\roleta2.png" type="image/x-icon">
   <link rel="stylesheet" href="roleta.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -47,7 +51,7 @@
   </div>
   <div class="color-picker" id="color-picker">
     <div class="container-selector-color">
-      
+
       <div id="container-color-picker" , class="color-picker-container"></div>
       <div class="container-input-color input-color" id="container-input-rgb">
         <span class="label-rgb">R</span><input type="text" autocomplete="off" id="input-rgb-red" class="input-rgb">
@@ -55,14 +59,17 @@
         <span class="label-rgb">B</span><input type="text" autocomplete="off" id="input-rgb-blue" class="input-rgb">
       </div>
 
-      <div class="input-hex input-color" id="input-hex">
-  
+      <div class="container-input-hex input-color" id="container-input-hex">
+        <span class="label-hex">Hex</span><input type="text" autocomplete="off" class="input-hex" id="input-hex">
       </div>
+
+      <button id="change-color-model-button" style="display: none"></button>
+      <label for="change-color-model-button" class="changel-color-model">↻ Trocar Modelo</label>
 
     </div>
     <div class="container-button">
-      <button class="button-save-color button-color-picker" id="button-save-color">Salvar</button>
       <button class="button-cancel-color button-color-picker" id="button-cancel-color">Cancelar</button>
+      <button class="button-save-color button-color-picker" id="button-save-color">Salvar</button>
     </div>
 
   </div>

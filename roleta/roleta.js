@@ -2,11 +2,19 @@ import * as Roleta from './modules/roleta-config.js';
 import * as CustomItem from './modules/customização-itens.js';
 import * as Util from './modules/utils.js';
 import * as easing from './libs/easing.js';
+import * as SeletorCor from './modules/seletor-cor.js';
+
+/*
+ A FAZER:
+    COMENTAR O CÓDIGO
+    DEIXAR BONITINHO
 
 /*
  LINK DAS BIBLIOTECAS DE FORA USADOS:
     spin-whell by CrazyTim: https://github.com/CrazyTim/spin-wheel?tab=readme-ov-file
-    iro.js by jaames: https://github.com/jaames/iro.js?tab=readme-ov-file
+    iro.js by jaames: 
+        https://github.com/jaames/iro.js?tab=readme-ov-file 
+        https://iro.js.org/colorPicker_api.html
     easing-utils by AndrewRayCode: https://github.com/AndrewRayCode/easing-utils?tab=readme-ov-file
  */
 
@@ -19,10 +27,29 @@ let estado = {
     cor_antiga: null,
     seletor_cor: null,
     seletor_aberto: false,
-    rgb_atualizado_manual: false
+    rgb_ativo: true,  //true = RGB, false = HEX
 }
 
-let seletor_aberto = false;
+//#region FUNÇÕES
+function selecionarInputAtivo(ativo){
+    if (ativo) return document.querySelector('#container-input-rgb').querySelectorAll('.input-rgb');
+    else return document.querySelector('#container-input-hex').querySelector('.input-hex');
+}
+
+const observador = new ResizeObserver(entries => {
+    for (let entry of entries) {
+        //Nova largura para o seletor (50% do container)
+        const novaLargura = entry.contentRect.width * 0.5;
+
+        //Atualiza o tamanho do seletor de cor se ele existir
+        if (estado.seletor_cor) {
+            estado.seletor_cor.resize(novaLargura);
+        }
+    }
+});
+observador.observe(container_seletor_cor);
+//#endregion
+
 let props = Roleta.createProps(
     ['Maçã', 'Banana', 'Abobora'],
     [5, 3, 2]
@@ -57,6 +84,7 @@ container.querySelector('.botao-roleta').addEventListener('click', () => {
 botao_adicionar.addEventListener('click', () => {
     CustomItem.adicionarItem(roleta, props, container_itens);
     peso_total += 1;
+    Roleta.aplicarConfigRoleta(roleta);
 });
 //#endregion
 
@@ -75,50 +103,33 @@ container_itens.addEventListener('click', (e) => {
 
         const id_item = container.id.split("-")[1];
         CustomItem.excluirItem(roleta, props, container, id_item);
+        Roleta.aplicarConfigRoleta(roleta);
         return;
     }
 
     //Ação de Abrir Seletor de Cor (Preview)
     cor_preview = target.closest('.cor-preview');
-    const inputs_rgb = document.querySelector('#container-input-rgb').querySelectorAll('.input-rgb');
 
+    //Abre o seletor de cor e atualiza os inputs rgba ao mudar a cor e também atualiza a bor do seletor
     if (cor_preview && !estado.seletor_aberto) {
         e.stopImmediatePropagation();
-        container_seletor_cor.style.display = 'flex';
+        container_seletor_cor.style.display = 'flex'; //Mostra o seletor de cor
 
-        estado.seletor_cor = new iro.ColorPicker(container_iro_picker, {
-            width: container_seletor_cor.offsetWidth * 0.5,
-            color: cor_preview.style.backgroundColor,
-            layoutDirection: 'horizontal',
-            layout: [
-                {
-                    component: iro.ui.Box,
-                },
-                {
-                    component: iro.ui.Slider,
-                    options: {
-                        sliderType: 'hue'
-                    }
-                },
-            ]
-        });
-        Util.PreencherRGB(estado.seletor_cor.color.rgb, inputs_rgb);
-        container_seletor_cor.style.border = 'solid 4px ' + estado.seletor_cor.color.hexString;
+        //Cria o seletor de cor e preenche os inputs rgb com a cor do preview
+        let inputs;
+        if (estado.rgb_ativo) inputs = document.querySelector('#container-input-rgb').querySelectorAll('.input-rgb');
+        else inputs = document.querySelector('#container-input-hex').querySelector('.input-hex');
 
-        estado.seletor_cor.on('color:change', (color) => {
-            if (!estado.rgb_atualizado_manual) {
-                Util.PreencherRGB(color.rgb, inputs_rgb);
-            }
-            container_seletor_cor.style.border = 'solid 4px ' + color.hexString;
-        });
+        estado.seletor_cor = SeletorCor.criarSeletorCor(container_seletor_cor, cor_preview.style.backgroundColor, inputs, container_iro_picker);
 
         estado.seletor_aberto = true;
         estado.cor_antiga = cor_preview.style.backgroundColor;
     }
+    //Troca o cor preview e coloca a cor do cor preview clicado
     else if (cor_preview && estado.seletor_aberto) {
-        estado.seletor_cor.color.set(cor_preview.style.backgroundColor);
-        Util.PreencherRGB(estado.seletor_cor.color.rgb, inputs_rgb);
-        container_seletor_cor.style.border = 'solid 4px ' + estado.seletor_cor.color.hexString;
+        let cor = cor_preview.style.backgroundColor === '' ? '#000000' : cor_preview.style.backgroundColor;
+        
+        estado.seletor_cor.color.set(cor);
     }
 });
 //#region CLICK BOTÕES
@@ -139,6 +150,25 @@ document.getElementById('button-save-color').addEventListener('click', () => {
         estado.seletor_aberto = false;
         container_seletor_cor.style.display = 'none';
     }
+});
+
+document.querySelector('.changel-color-model').addEventListener('click', () => {
+    // Lógica para trocar o modelo de cor (RGB <-> HEX)
+    const container_rgb = document.querySelector('#container-input-rgb');
+    const container_hex = document.querySelector('#container-input-hex');
+
+    if (estado.rgb_ativo) {
+        container_rgb.style.display = 'none';
+        container_hex.style.display = 'flex';
+        estado.rgb_ativo = false;
+    }
+    else {
+        container_rgb.style.display = 'flex';
+        container_hex.style.display = 'none';
+        estado.rgb_ativo = true;
+    }
+
+    estado.seletor_cor = SeletorCor.criarSeletorCor(container_seletor_cor, estado.seletor_cor.color.hexString, selecionarInputAtivo(estado.rgb_ativo), container_iro_picker);   
 });
 //#endregion
 //#endregion
@@ -189,34 +219,33 @@ container_seletor_cor.querySelectorAll('.input-rgb').forEach(input => {
     input.addEventListener('keydown', (e) => {
         let digito = Util.VerficarSeNumero(e.key) ? e.key : '';
         let numero_atual = input.value + digito;
-        let r, g, b;
-        let rgbString = 'rgb(255, 0, 0';
 
         if (Util.VerficarSeNumero(e.key) && e.key !== " " && input.value.length < 3) {
             if (parseInt(numero_atual) > 255) {
                 e.preventDefault();
                 return;
             }
-
-            input.id === 'input-rgb-red' ? r = numero_atual : r = estado.seletor_cor.color.rgb.r;
-            input.id === 'input-rgb-green' ? g = numero_atual : g = estado.seletor_cor.color.rgb.g;
-            input.id === 'input-rgb-blue' ? b = numero_atual : b = estado.seletor_cor.color.rgb.b;
-            rgbString = `rgb(${r}, ${g}, ${b})`;
-            estado.rgb_atualizado_manual = true;
-
+            const rgbString = SeletorCor.gerarStringRGB(estado.seletor_cor.color.rgb, input, numero_atual);
+            
+            container_seletor_cor.dataset.bloqueado = "true";
             estado.seletor_cor.color.set(rgbString);
+
+            setTimeout(() => {
+                container_seletor_cor.dataset.bloqueado = "false";
+            }, 20);
+
         }
 
         else if (e.key.length > 1) {
-
-            numero_atual = input.value.replace(/.$/, '');
-            input.id === 'input-rgb-red' ? r = numero_atual : r = estado.seletor_cor.color.rgb.r;
-            input.id === 'input-rgb-green' ? g = numero_atual : g = estado.seletor_cor.color.rgb.g;
-            input.id === 'input-rgb-blue' ? b = numero_atual : b = estado.seletor_cor.color.rgb.b;
-            rgbString = `rgb(${r}, ${g}, ${b})`;
-            estado.rgb_atualizado_manual = true;
-
+            const rgbString = SeletorCor.gerarStringRGB(estado.seletor_cor.color.rgb, input, numero_atual);
+            
+            container_seletor_cor.dataset.bloqueado = "true";
             estado.seletor_cor.color.set(rgbString);
+
+            setTimeout(() => {
+                container_seletor_cor.dataset.bloqueado = "false";
+            }, 20);
+
             return;
         }
 

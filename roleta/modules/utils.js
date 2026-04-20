@@ -24,10 +24,4 @@ function VerficarSeNumero(value) {
     return (value >= "0" && value <= "9") || !isNaN(value);
 }
 
-function PreencherRGB(obj_rgb, inputs_rgb){
-    inputs_rgb.forEach((input, index) => {
-        input.value = Object.values(obj_rgb)[index];
-    });
-}
-
-export { gerarId, VerficarCaracterProibido, VerficarSeNumero, PreencherRGB }
+export { gerarId, VerficarCaracterProibido, VerficarSeNumero }

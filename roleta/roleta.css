@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   font: black;
-  font-family: 'Arial', sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 body {
@@ -10,6 +10,19 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+input, span, button, p, img, label {
+  user-select: none;
+}
+
+button {
+  transition: transform 0.25s;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+  }
 }
 
 header {
@@ -24,12 +37,6 @@ header {
 
   .botoes-menu {
     font-size: 25px;
-    transition: transform 0.25s;
-  }
-
-  .botoes-menu:hover {
-    cursor: pointer;
-    transform: scale(1.05);
   }
 }
 
@@ -54,13 +61,27 @@ header {
 
   .botao-roleta {
     position: absolute;
-    transition: transform 0.2s;
+    transition: transform 0.25s, filter 0.25s;
   }
 
   .botao-roleta:hover {
     cursor: pointer;
     transform: scale(1.05);
     filter: brightness(110%);
+  }
+}
+
+.items-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  .itens-roleta {
+    max-height: 425px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: #000 solid 2px;
+    padding: 10px;
   }
 }
 
@@ -85,10 +106,22 @@ header {
   justify-content: center;
   margin-top: 20px;
 
+  
+}
+
+.input-color {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.container-input-color {
+  display: flex;
+
   .input-rgb {
     width: 50px;
     height: 20px;
-    margin-top: 20px;
     margin-right: 35px;
     border: solid 2px #000;
     border-radius: 12%;
@@ -102,10 +135,44 @@ header {
   }
 }
 
+.container-input-hex {
+  display: none;
+
+  .input-hex {
+    width: 100px;
+    height: 20px;
+    border: solid 2px #000;
+    border-radius: 10%;
+    font-size: 18px;
+  }
+
+  .label-hex {
+    color: #fff;
+    font-size: 18px;
+    margin-right: 4px;
+  }
+}
+
+.changel-color-model {
+  color: #fff;
+  font-size: 18px;
+  margin-top: 20px;
+  transition: transform 0.25s;
+  
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
 .container-button {
   height: 50%;
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   align-items: end;
   margin: 10px;
   gap: 20px;
@@ -117,8 +184,6 @@ header {
     height: 30px;
     font-size: 15px;
     background-color: #ffffff;
-    cursor: pointer;
-    transition: transform 0.25s;
   }
 
   .button-save-color {
@@ -131,6 +196,7 @@ header {
     border-color: #c70000;
   }
 }
+
 
 .menu {
   border: 2px solid #000;
@@ -156,10 +222,12 @@ header {
     height: 20px;
     margin-right: 10px;
     background-color: rgb(0, 0, 0);
+    transition: transform 0.25s;
   }
 
   .cor-preview:hover {
     cursor: pointer;
+    transform: scale(1.05);
   }
 
   input::-webkit-outer-spin-button,
@@ -195,6 +263,7 @@ header {
     border: 2px solid #000;
     border-radius: 25%;
     background-color: #ff0000;
+    transition: transform 0.25s;
   }
 
   .excluir-item:hover {
@@ -209,13 +278,8 @@ header {
   border-radius: 25%;
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 45px;
   height: 45px;
   font-size: 40px;
-  transition: transform 0.25s;
-}
-
-.adicionar-item:hover {
-  cursor: pointer;
-  transform: scale(1.05);
 }
