@@ -21,7 +21,7 @@ function VerficarCaracterProibido(value) {
 }
 
 function VerficarSeNumero(value) {
-    return (value >= "0" && value <= "9") || !isNaN(value);
+    return !(Number.isNaN(Number(value)));
 }
 
 export { gerarId, VerficarCaracterProibido, VerficarSeNumero }

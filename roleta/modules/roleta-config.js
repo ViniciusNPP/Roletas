@@ -18,7 +18,7 @@ let props = {
     }
 }
 
-function aplicarConfigRoleta(roleta, isInteractive = false, itemLabelRadius = 0.6, itemLabelRadiusMax = 0.35, itemLabelFontSizeMax = 30, itemLabelAlign = 'center') {
+function aplicarConfigRoleta(roleta, isInteractive = false, itemLabelRadius = 0.6, itemLabelRadiusMax = 0.23, itemLabelFontSizeMax = 30, itemLabelAlign = 'center') {
     roleta.isInteractive = isInteractive
     roleta.itemLabelRadius = itemLabelRadius;
     roleta.itemLabelRadiusMax = itemLabelRadiusMax;

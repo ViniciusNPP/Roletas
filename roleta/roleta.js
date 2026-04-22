@@ -31,7 +31,7 @@ let estado = {
 }
 
 //#region FUNÇÕES
-function selecionarInputAtivo(ativo){
+function selecionarInputAtivo(ativo) {
     if (ativo) return document.querySelector('#container-input-rgb').querySelectorAll('.input-rgb');
     else return document.querySelector('#container-input-hex').querySelector('.input-hex');
 }
@@ -84,7 +84,6 @@ container.querySelector('.botao-roleta').addEventListener('click', () => {
 botao_adicionar.addEventListener('click', () => {
     CustomItem.adicionarItem(roleta, props, container_itens);
     peso_total += 1;
-    Roleta.aplicarConfigRoleta(roleta);
 });
 //#endregion
 
@@ -103,7 +102,6 @@ container_itens.addEventListener('click', (e) => {
 
         const id_item = container.id.split("-")[1];
         CustomItem.excluirItem(roleta, props, container, id_item);
-        Roleta.aplicarConfigRoleta(roleta);
         return;
     }
 
@@ -120,15 +118,15 @@ container_itens.addEventListener('click', (e) => {
         if (estado.rgb_ativo) inputs = document.querySelector('#container-input-rgb').querySelectorAll('.input-rgb');
         else inputs = document.querySelector('#container-input-hex').querySelector('.input-hex');
 
-        estado.seletor_cor = SeletorCor.criarSeletorCor(container_seletor_cor, cor_preview.style.backgroundColor, inputs, container_iro_picker);
+        estado.seletor_cor = SeletorCor.criarSeletorCor(container_seletor_cor, window.getComputedStyle(cor_preview).backgroundColor, inputs, container_iro_picker);
 
         estado.seletor_aberto = true;
         estado.cor_antiga = cor_preview.style.backgroundColor;
     }
     //Troca o cor preview e coloca a cor do cor preview clicado
     else if (cor_preview && estado.seletor_aberto) {
-        let cor = cor_preview.style.backgroundColor === '' ? '#000000' : cor_preview.style.backgroundColor;
-        
+        let cor = cor_preview.style.backgroundColor === '' ? '#ffffff' : cor_preview.style.backgroundColor;
+
         estado.seletor_cor.color.set(cor);
     }
 });
@@ -144,11 +142,16 @@ document.getElementById('button-cancel-color').addEventListener('click', () => {
 
 document.getElementById('button-save-color').addEventListener('click', () => {
     if (estado.seletor_aberto) {
+        
         cor_preview.style.backgroundColor = estado.seletor_cor.color.hexString;
         container_iro_picker.removeChild(container_iro_picker.firstChild);
-
+        
         estado.seletor_aberto = false;
         container_seletor_cor.style.display = 'none';
+        
+        CustomItem.alterarCor(roleta, props, cor_preview.style.backgroundColor, cor_preview.id.split("-").at(-1));
+        //Se a luminancia for maior que 128 o texto fica preto, se for menor fica branco
+        CustomItem.Luminancia(estado.seletor_cor.color.rgb, props, cor_preview.id.split("-").at(-1));
     }
 });
 
@@ -168,7 +171,7 @@ document.querySelector('.changel-color-model').addEventListener('click', () => {
         estado.rgb_ativo = true;
     }
 
-    estado.seletor_cor = SeletorCor.criarSeletorCor(container_seletor_cor, estado.seletor_cor.color.hexString, selecionarInputAtivo(estado.rgb_ativo), container_iro_picker);   
+    estado.seletor_cor = SeletorCor.criarSeletorCor(container_seletor_cor, estado.seletor_cor.color.hexString, selecionarInputAtivo(estado.rgb_ativo), container_iro_picker);
 });
 //#endregion
 //#endregion
@@ -214,49 +217,48 @@ container_itens.addEventListener('keydown', (e) => {
     }
 });
 //#endregion
-//#region KEYDOWN SELETOR DE COR
+//#region INPUT RGB
 container_seletor_cor.querySelectorAll('.input-rgb').forEach(input => {
-    input.addEventListener('keydown', (e) => {
-        let digito = Util.VerficarSeNumero(e.key) ? e.key : '';
-        let numero_atual = input.value + digito;
-
-        if (Util.VerficarSeNumero(e.key) && e.key !== " " && input.value.length < 3) {
-            if (parseInt(numero_atual) > 255) {
-                e.preventDefault();
-                return;
-            }
-            const rgbString = SeletorCor.gerarStringRGB(estado.seletor_cor.color.rgb, input, numero_atual);
-            
-            container_seletor_cor.dataset.bloqueado = "true";
-            estado.seletor_cor.color.set(rgbString);
-
-            setTimeout(() => {
-                container_seletor_cor.dataset.bloqueado = "false";
-            }, 20);
-
-        }
-
-        else if (e.key.length > 1) {
-            const rgbString = SeletorCor.gerarStringRGB(estado.seletor_cor.color.rgb, input, numero_atual);
-            
-            container_seletor_cor.dataset.bloqueado = "true";
-            estado.seletor_cor.color.set(rgbString);
-
-            setTimeout(() => {
-                container_seletor_cor.dataset.bloqueado = "false";
-            }, 20);
-
+    input.addEventListener('input', (e) => {
+        let valor = e.target.value;
+        
+        if (!Util.VerficarSeNumero(valor) || parseInt(valor) > 255) {
+            e.target.value = valor.slice(0, -1);
             return;
         }
 
-        if (!Util.VerficarSeNumero(e.key) || Util.VerficarCaracterProibido(e.key) || e.key === " " || input.value.length >= 3) {
-            e.preventDefault();
-        }
+        let cor_nova = valor == "" ? 0 : valor;
+        const rgbString = SeletorCor.gerarStringRGB(estado.seletor_cor.color.rgb, input, cor_nova);
+
+        container_seletor_cor.dataset.bloqueado = "true";
+        estado.seletor_cor.color.set(rgbString);
+
+        setTimeout(() => {
+            container_seletor_cor.dataset.bloqueado = "false";
+        }, 20);
     });
 });
 //#endregion
+//#region INPUT HEX
+container_seletor_cor.querySelectorAll('#input-hex').forEach(input => {
+    input.addEventListener('input', (e) => {
+        if (e.target.value.length > 7) {
+            e.preventDefault();
+            e.target.value = e.target.value.slice(0, 7);
+            return;
+        }
 
-//#region BLUR
+        container_seletor_cor.dataset.bloqueado = "true";
+        e.target.value.length === 7 ? estado.seletor_cor.color.set(e.target.value) : null;
+
+        setTimeout(() => {
+            container_seletor_cor.dataset.bloqueado = "false";
+        }, 20);
+    })
+})
+//#endregion
+
+//#region MUDANÇA ROLETA
 container_itens.addEventListener('blur', (e) => {
     const target = e.target;
     const container = target.closest('.item');
@@ -275,7 +277,6 @@ container_itens.addEventListener('blur', (e) => {
 
         CustomItem.alterarChance(roleta, props, parseInt(target.value), id_item);
         peso_total += parseInt(target.value) - parseInt(chance_velha);
-        Roleta.aplicarConfigRoleta(roleta);
     }
 
     // 2. Validação de NOME no Blur
@@ -290,7 +291,7 @@ container_itens.addEventListener('blur', (e) => {
         if (target.value === nome_antigo) return;
 
         CustomItem.alterarNome(roleta, props, target.value, id_item);
-        Roleta.aplicarConfigRoleta(roleta);
     }
+
 }, true); // O 'true' é vital aqui para o blur funcionar via delegação
 //#endregion
