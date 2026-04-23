@@ -94,6 +94,7 @@ header {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 25%;
+  min-width: fit-content;
   height: 50%;
   background-color: #0c007a;
   z-index: 10;
@@ -105,8 +106,6 @@ header {
   align-items: center;
   justify-content: center;
   margin-top: 20px;
-
-  
 }
 
 .input-color {

@@ -45,13 +45,15 @@ function excluirItem(roleta, props, container, id) {
     Roleta.aplicarConfigRoleta(roleta);
 }
 
-function Luminancia(obj_rgb, props, id) {
+function Luminancia(roleta, obj_rgb, props, id) {
     const item = props.items.find(item => item.value === id);
     if (item) {
         let { r, g, b } = obj_rgb;
         let luminancia = (r * 0.299) + (g * 0.587) + (b * 0.114)
         
         luminancia > 128 ? item.labelColor = '#000000' : item.labelColor = '#ffffff';
+        roleta.init(props);
+        Roleta.aplicarConfigRoleta(roleta);
     }
 }
 
