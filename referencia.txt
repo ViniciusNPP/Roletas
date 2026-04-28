@@ -1,0 +1,19 @@
+PROJETO: Roleta Customizada
+
+--- BIBLIOTECAS EXTERNAS ---
+
+1. Spin-Wheel (CrazyTim)
+   - Uso: Motor principal da roleta e renderização do Canvas.
+   - Link: https://github.com/CrazyTim/spin-wheel
+
+2. Iro.js (jaames)
+   - Uso: Seletor de cores visual e manipulação de RGB/HEX.
+   - API: https://iro.js.org/colorPicker_api.html
+   - GitHub: https://github.com/jaames/iro.js
+
+3. Easing-utils (AndrewRayCode)
+   - Uso: Funções matemáticas para suavizar o giro da roleta.
+   - Link: https://github.com/AndrewRayCode/easing-utils
+
+--- ANOTAÇÕES ---
+- A lógica de luminância foi baseada no padrão de contraste WCAG.

@@ -1,4 +1,4 @@
-import { iniciarRoleta } from './modules/core/roleta.js';
+import { iniciarRoleta, roletar } from './modules/core/roleta.js';
 import { iniciarEventosItens } from './modules/core/lista_itens.js';
 import { iniciarConfigSeletor } from './modules/components/seletor_config.js';
 
@@ -11,6 +11,9 @@ const container_iro_picker = document.querySelector('#container-color-picker');
 
 // 1. Inicia a lógica principal da Roleta (Isso devolve as variáveis importantes)
 const dados_roleta = iniciarRoleta(container, container_itens);
+
+//1.1. Inicia a lógica de girar e sortear os itens da roleta
+roletar(dados_roleta, container);
 
 // 2. Passa os dados da roleta para os Itens poderem editar (adicionar/excluir/alterar)
 iniciarEventosItens(container_itens, botao_adicionar, dados_roleta);

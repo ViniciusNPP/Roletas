@@ -16,21 +16,27 @@ function criarItem(div, nome, chance, id_item) {
     }
 }
 
-function alterarNome(roleta, props, nome_novo, id) {
+function alterarNome(roleta, props, nome_novo, id, container_items) {
     const item = props.items.find(item => item.value === id);
     if (item) {
         item.label = nome_novo;
     }
 
+    const input = container_items.querySelector(`#nome-item-${id}`);
+    input.setAttribute('value', nome_novo);
+
     roleta.init(props); //Reinicializa a roleta para atualizar os nomes dos itens
     Roleta.aplicarConfigRoleta(roleta);
 }
 
-function alterarChance(roleta, props, chance_nova, id) {
+function alterarChance(roleta, props, chance_nova, id, container_items) {
     const item = props.items.find(item => item.value === id);
     if (item) {
         item.weight = chance_nova;
     }
+
+    const input = container_items.querySelector(`#chance-item-${id}`);
+    input.setAttribute('value', chance_nova);
 
     roleta.init(props); //Reinicializa a roleta para atualizar as chances dos itens
     Roleta.aplicarConfigRoleta(roleta);

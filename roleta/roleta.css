@@ -16,12 +16,16 @@ input, span, button, p, img, label {
   user-select: none;
 }
 
-button {
+button, .label-button {
   transition: transform 0.25s;
 
   &:hover {
     cursor: pointer;
     transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }
 
@@ -36,6 +40,8 @@ header {
   }
 
   .botoes-menu {
+    width: auto;
+    height: auto;
     font-size: 25px;
   }
 }
@@ -157,15 +163,6 @@ header {
   font-size: 18px;
   margin-top: 20px;
   transition: transform 0.25s;
-  
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
 }
 
 .container-button {

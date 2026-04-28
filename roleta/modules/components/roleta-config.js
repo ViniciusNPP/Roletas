@@ -24,6 +24,7 @@ function aplicarConfigRoleta(roleta, isInteractive = false, itemLabelRadius = 0.
     roleta.itemLabelRadiusMax = itemLabelRadiusMax;
     roleta.itemLabelFontSizeMax = itemLabelFontSizeMax;
     roleta.itemLabelAlign = itemLabelAlign;
+    roleta.rotation = 90;
 }
 
 function getProps(){
@@ -79,7 +80,7 @@ function createRoleta(container, props){
 
 function sorteio(peso, items){
     let random = Math.random() * peso; //Sorteia um número aleatório onde o máximo é o peso total
-
+    
     for(let i = 0; i < items.length; i++){
         if (random < items[i].weight){ //Se random for menor que weight, significa que o item foi sorteado
             return i;
@@ -89,12 +90,12 @@ function sorteio(peso, items){
 }
 
 async function girarRoleta(roleta, ease, duration, props, peso_total) {
-    if (!girando){
-        girando = true;
+    if (girando) return;
+    
+    girando = true;
         
-        let index_item = sorteio(peso_total, props.items); //sorteio do item
-        roleta.spinToItem(index_item, duration, false, 5, 1, ease);
-    }
+    let index_item = sorteio(peso_total, props.items); //sorteio do item
+    roleta.spinToItem(index_item, duration, false, 5, 1, ease);
 }
 
 export {createProps, addToProps, deleteProps, updateProps, getProps, createRoleta, girarRoleta, aplicarConfigRoleta};
