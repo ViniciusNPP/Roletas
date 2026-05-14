@@ -3,7 +3,7 @@
 //dentro_da_pasta: se true, acessa as roletas dentro da pasta especificada por id_pasta
 //id_roleta: acessar uma roleta específica dentro da pasta
 //#region Read
-function readLocalStorage(id_pasta = null, dentro_da_pasta = false, id_roleta = null){
+export function readLocalStorage(id_pasta = null, dentro_da_pasta = false, id_roleta = null){
     let data =  JSON.parse(localStorage.getItem('pastas')); //Pega todas as pastas do localStorage
     data = id_pasta ? data.find(p => p.id === id_pasta) : data; //Se id_pasta != null/undefined, pega a pasta específica
 
@@ -23,7 +23,7 @@ function readLocalStorage(id_pasta = null, dentro_da_pasta = false, id_roleta = 
 //dentro_da_pasta: se a pasta/roleta está dentro de uma pasta
 //id_roleta: id da roleta que foi alterada (necessário apenas se dentro_da_pasta for true)
 //#region Update
-function updateLocalStorage(elemento, id_pasta, dentro_da_pasta = false, id_roleta = null){
+export function updateLocalStorage(elemento, id_pasta, dentro_da_pasta = false, id_roleta = null){
     let pastas = readLocalStorage(); //Todos os dados do localStorage
     let data = readLocalStorage(id_pasta, dentro_da_pasta, id_roleta); //Pega somente 1 pasta/roleta do localStorage
 
@@ -68,7 +68,7 @@ function updateLocalStorage(elemento, id_pasta, dentro_da_pasta = false, id_role
 //dentro_da_pasta: se a pasta/roleta está dentro de uma pasta
 //id_roleta: id da roleta que será removida (necessário apenas se dentro_da_pasta for true)
 //#region Delete
-function deleteLocalStorage(id_pasta, dentro_da_pasta = false, id_roleta = null){
+export function deleteLocalStorage(id_pasta, dentro_da_pasta = false, id_roleta = null){
     let pastas = readLocalStorage(); //Todos os dados do localStorage
     let data = readLocalStorage(id_pasta, dentro_da_pasta, id_roleta); //Pega somente 1 pasta/roleta do localStorage
 
@@ -92,7 +92,7 @@ function deleteLocalStorage(id_pasta, dentro_da_pasta = false, id_roleta = null)
 //dentro_da_pasta: se a pasta/roleta foi criada dentro de uma pasta
 //id_pasta: id da pasta onde a roleta foi criada (necessário apenas se dentro_da_pasta for true)
 //#region Create
-function createLocalStorage(nome_container, dentro_da_pasta = false, id_pasta = null){
+export function createLocalStorage(nome_container, dentro_da_pasta = false, id_pasta = null){
     let pastas = readLocalStorage() || []; //Pega todas as pastas do localStorage ou inicia array vazio
     const elem = document.getElementById(nome_container).lastElementChild; //Pega o container de pastas/roletas
 
@@ -121,7 +121,7 @@ function createLocalStorage(nome_container, dentro_da_pasta = false, id_pasta = 
 //#endregion
 
 //Constroi as pastas salvas no localStorage
-function carregarPastasLocal(document, pastas){
+export function carregarPastasLocal(document, pastas){
     if (pastas){
         
         pastas.forEach((pasta) => {
@@ -139,7 +139,7 @@ function carregarPastasLocal(document, pastas){
 }
 
 //Constroi as roletas salvas no localStorage
-function carregarRoletasLocal(document, roletas){
+export function carregarRoletasLocal(document, roletas){
     if (roletas){
         
         roletas.forEach((roleta) => {
@@ -165,5 +165,3 @@ function carregarRoletasLocal(document, roletas){
         });
     }
 }
-
-export { carregarPastasLocal, carregarRoletasLocal, updateLocalStorage, createLocalStorage, deleteLocalStorage };

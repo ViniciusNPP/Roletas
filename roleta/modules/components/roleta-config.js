@@ -12,13 +12,16 @@ let props = {
         }
         */
     ],
-    onRest: (e) => { //lança o evento quando a roleta está parada
-        console.log("Vencedor: ", props.items[e.currentIndex].label + "!!!");
+    onRest: (e) => { //lança o evento quando a roleta está parada     
+        const id_vencedor = props.items[e.currentIndex].value;
+        const nome_vencedor = document.querySelector(`#nome-item-${id_vencedor}`).value;
+        
+        console.log("Vencedor: ", nome_vencedor + "!!!");
         girando = false;
     }
 }
 
-function aplicarConfigRoleta(roleta, isInteractive = false, itemLabelRadius = 0.6, itemLabelRadiusMax = 0.23, itemLabelFontSizeMax = 30, itemLabelAlign = 'center') {
+export function aplicarConfigRoleta(roleta, isInteractive = false, itemLabelRadius = 0.6, itemLabelRadiusMax = 0.23, itemLabelFontSizeMax = 30, itemLabelAlign = 'center') {
     roleta.isInteractive = isInteractive
     roleta.itemLabelRadius = itemLabelRadius;
     roleta.itemLabelRadiusMax = itemLabelRadiusMax;
@@ -27,11 +30,11 @@ function aplicarConfigRoleta(roleta, isInteractive = false, itemLabelRadius = 0.
     roleta.rotation = 90;
 }
 
-function getProps(){
+export function getProps(){
     return props;
 }
 
-function createProps(lista_itens = ['item 1', 'item 2'], pesos = [1, 1]){
+export function createProps(lista_itens = ['item 1', 'item 2'], pesos = [1, 1]){
     for (let i = 0; i < lista_itens.length; i++){
         props.items.push({
             label: lista_itens[i],
@@ -42,7 +45,7 @@ function createProps(lista_itens = ['item 1', 'item 2'], pesos = [1, 1]){
     return props;
 }
 
-function addToProps(prop, item, peso, id){
+export function addToProps(prop, item, peso, id){
     prop.items.push({
         label: item,
         weight: peso,
@@ -51,7 +54,7 @@ function addToProps(prop, item, peso, id){
     return prop;
 }
 
-function deleteProps(itens_id){
+export function deleteProps(itens_id){
     if (Array.isArray(itens_id) && itens_id.length > 0) {
         props.items = props.items.filter(item => !itens_id.includes(item.value));
         return props;
@@ -60,7 +63,7 @@ function deleteProps(itens_id){
     }
 }
 
-function updateProps(lista_itens = [{item: 'item 1', peso: 1, id: null}]){
+export function updateProps(lista_itens = [{item: 'item 1', peso: 1, id: null}]){
     for (let i = 0; i < lista_itens.length; i++) {
         if (lista_itens[i].id === null) break;
         
@@ -73,12 +76,12 @@ function updateProps(lista_itens = [{item: 'item 1', peso: 1, id: null}]){
     return props;
 }
 
-function createRoleta(container, props){
+export function createRoleta(container, props){
     const roleta = new Wheel(container, props);
     return roleta;
 }
 
-function sorteio(peso, items){
+export function sorteio(peso, items){
     let random = Math.random() * peso; //Sorteia um número aleatório onde o máximo é o peso total
     
     for(let i = 0; i < items.length; i++){
@@ -89,7 +92,7 @@ function sorteio(peso, items){
     }
 }
 
-async function girarRoleta(roleta, ease, duration, props, peso_total) {
+export async function girarRoleta(roleta, ease, duration, props, peso_total) {
     if (girando) return;
     
     girando = true;
@@ -97,5 +100,3 @@ async function girarRoleta(roleta, ease, duration, props, peso_total) {
     let index_item = sorteio(peso_total, props.items); //sorteio do item
     roleta.spinToItem(index_item, duration, false, 5, 1, ease);
 }
-
-export {createProps, addToProps, deleteProps, updateProps, getProps, createRoleta, girarRoleta, aplicarConfigRoleta};

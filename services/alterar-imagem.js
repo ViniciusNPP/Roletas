@@ -1,6 +1,6 @@
 import { updateLocalStorage } from './data.js';
 
-function alterarImagem(input_img, mostrar_img, texto) {
+export function alterarImagem(input_img, mostrar_img, texto) {
     return new Promise((resolve) => {
         const imgFile = input_img.files[0];
         
@@ -44,7 +44,7 @@ function alterarImagem(input_img, mostrar_img, texto) {
     })
 }
 
-function aplicarAlteracaoImagem(img_alterar, mostrar_img, texto, arquivo) {
+export function aplicarAlteracaoImagem(img_alterar, mostrar_img, texto, arquivo) {
     if (img_alterar) {
         arquivo.src = img_alterar;
     }
@@ -54,5 +54,3 @@ function aplicarAlteracaoImagem(img_alterar, mostrar_img, texto, arquivo) {
 
     updateLocalStorage(arquivo.parentElement, arquivo.parentElement.id);
 }
-
-export { alterarImagem, aplicarAlteracaoImagem };

@@ -1,7 +1,7 @@
 import * as Roleta from './roleta-config.js';
 import * as Util from './utils.js';
 
-function criarItem(div, nome, chance, id_item) {
+export function criarItem(div, nome, chance, id_item) {
     if (div) {
         div.innerHTML += `
         <div class="item" id="item-${id_item}">
@@ -16,7 +16,7 @@ function criarItem(div, nome, chance, id_item) {
     }
 }
 
-function alterarNome(roleta, props, nome_novo, id, container_items) {
+export function alterarNome(roleta, props, nome_novo, id, container_items) {
     const item = props.items.find(item => item.value === id);
     if (item) {
         item.label = nome_novo;
@@ -29,7 +29,7 @@ function alterarNome(roleta, props, nome_novo, id, container_items) {
     Roleta.aplicarConfigRoleta(roleta);
 }
 
-function alterarChance(roleta, props, chance_nova, id, container_items) {
+export function alterarChance(roleta, props, chance_nova, id, container_items) {
     const item = props.items.find(item => item.value === id);
     if (item) {
         item.weight = chance_nova;
@@ -42,7 +42,7 @@ function alterarChance(roleta, props, chance_nova, id, container_items) {
     Roleta.aplicarConfigRoleta(roleta);
 }
 
-function excluirItem(roleta, props, container, id) {
+export function excluirItem(roleta, props, container, id) {
     props.items = props.items.filter(item => item.value !== id); //Remove o item do array de itens
 
     container.remove();
@@ -51,7 +51,7 @@ function excluirItem(roleta, props, container, id) {
     Roleta.aplicarConfigRoleta(roleta);
 }
 
-function Luminancia(roleta, obj_rgb, props, id) {
+export function Luminancia(roleta, obj_rgb, props, id) {
     const item = props.items.find(item => item.value === id);
     if (item) {
         let { r, g, b } = obj_rgb;
@@ -63,7 +63,7 @@ function Luminancia(roleta, obj_rgb, props, id) {
     }
 }
 
-function alterarCor(roleta, props, cor_nova, id) {
+export function alterarCor(roleta, props, cor_nova, id) {
     const item = props.items.find(item => item.value === id);
     if (item) {
         item.backgroundColor = cor_nova;
@@ -73,12 +73,21 @@ function alterarCor(roleta, props, cor_nova, id) {
     Roleta.aplicarConfigRoleta(roleta);
 }
 
-function adicionarItem(roleta, props, container) {
-    props = Roleta.addToProps(props, `Item ${props.items.length + 1}`, 1, Util.gerarId());
-    criarItem(container, `Item ${props.items.length}`, 1, props.items[props.items.length - 1].value);
+export function adicionarItem(roleta, props, container, gerar_item_automatico = true, item_novo = null) {
+    if (gerar_item_automatico) {
+        props = Roleta.addToProps(props, `Item ${props.items.length + 1}`, 1, Util.gerarId());
+        criarItem(container, `Item ${props.items.length}`, 1, props.items[props.items.length - 1].value);
+    }
+    else {
+        if (!item_novo) throw new Error("Item novo não fornecido"); //Lança um erro caso não tenha passado o item novo
+        criarItem(container, item_novo.label, item_novo.weight, item_novo.value);
+    }
+    
 
     roleta.init(props);
     Roleta.aplicarConfigRoleta(roleta);
 }
 
-export { criarItem, alterarCor, alterarNome, alterarChance, excluirItem, adicionarItem, Luminancia }
+export function addMultItems(roleta, props, container, items) {
+
+}

@@ -46,6 +46,10 @@ header {
   }
 }
 
+.escondido {
+  display: none;
+}
+
 .conteudo-container {
   display: flex;
   justify-content: center;
@@ -88,6 +92,12 @@ header {
     overflow-x: hidden;
     border: #000 solid 2px;
     padding: 10px;
+  }
+
+  .add-item-texto {
+    resize: none;
+    border: #000 solid 1px;
+    height: 100%;
   }
 }
 
@@ -268,14 +278,33 @@ header {
   }
 }
 
-.adicionar-item {
-  margin: 10px 0 0 45%;
-  border: 1px solid #000;
-  border-radius: 25%;
+.container-add-item {
   display: flex;
+  flex-direction: row;
   justify-content: center;
-  align-items: center;
-  width: 45px;
-  height: 45px;
-  font-size: 40px;
+  justify-content: space-between;
+  margin: 10px 0 0 0;
+  width: auto;
+
+  .adicionar-item, .mudar-formato-add {
+    width: 45px;
+    height: 45px;
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #000;
+    border-radius: 25%;
+  }
+
+  .mudar-formato-add {
+    margin-top: 10px;
+    height: 35px;
+    width: 35px;
+    font-size: 35px;
+  }
+
+  .espaçamento-add-item {
+    width: 45px;
+  }
 }

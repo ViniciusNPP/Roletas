@@ -1,14 +1,14 @@
-function PreencherRGB(obj_rgb, inputs_rgb){
+export function PreencherRGB(obj_rgb, inputs_rgb){
     inputs_rgb.forEach((input, index) => {
         input.value = Object.values(obj_rgb)[index];
     });
 }
 
-function PreencherHex(cor_hex, input_hex) {
+export function PreencherHex(cor_hex, input_hex) {
     input_hex.value = cor_hex;
 }
 
-function gerarStringRGB(objt_rgb, input, nova_cor) {
+export function gerarStringRGB(objt_rgb, input, nova_cor) {
     let {r, g, b} = objt_rgb;
 
     if (input.id === 'input-rgb-red') r = nova_cor;
@@ -18,7 +18,7 @@ function gerarStringRGB(objt_rgb, input, nova_cor) {
     return `rgb(${r}, ${g}, ${b})`;
 }
 
-function criarSeletorCor(container, initial_color, inputs, color_picker) {
+export function criarSeletorCor(container, initial_color, inputs, color_picker) {
     if (color_picker.childNodes.length > 0) color_picker.removeChild(color_picker.firstChild);
     let seletor_cor = new iro.ColorPicker(color_picker, {
         width: container.offsetWidth,
@@ -52,5 +52,3 @@ function criarSeletorCor(container, initial_color, inputs, color_picker) {
 
     return seletor_cor;
 }
-
-export { criarSeletorCor, gerarStringRGB }
