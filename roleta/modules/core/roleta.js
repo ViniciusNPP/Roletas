@@ -1,7 +1,7 @@
-// Importações necessárias para a roleta
 import * as Roleta from '../components/roleta-config.js';
 import * as CustomItem from '../components/customização-itens.js';
 import * as easing from '../../libs/easing.js';
+import * as Util from '../components/utils.js';
 
 const props = Roleta.createProps();
 
@@ -11,7 +11,7 @@ export function iniciarRoleta(container, container_itens) {
 
     //Cria os itens na interface e calcula o peso
     props.items.forEach(item => {
-        CustomItem.criarItem(container_itens, item.label, item.weight, item.value);
+        CustomItem.criarItem(container_itens, item.label, item.weight, item.value, item.backGroundColor);
     });
     let peso_total = props.items.reduce((total, item) => total + item.weight, 0);
 

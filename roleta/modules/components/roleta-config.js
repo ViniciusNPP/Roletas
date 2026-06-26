@@ -1,5 +1,6 @@
 import {Wheel} from 'https://cdn.jsdelivr.net/npm/spin-wheel@5.0.2/dist/spin-wheel-esm.js';
 import * as Util from './utils.js'
+import { alterarCor } from './customização-itens.js';
 
 let girando = false;
 let props = {
@@ -78,6 +79,11 @@ export function updateProps(lista_itens = [{item: 'item 1', peso: 1, id: null}])
 
 export function createRoleta(container, props){
     const roleta = new Wheel(container, props);
+
+    props.items.forEach(item => {
+        item.backGroundColor =  Util.GerarCor('random');
+        alterarCor(roleta, props, item.backGroundColor, item.value);
+    });
     return roleta;
 }
 

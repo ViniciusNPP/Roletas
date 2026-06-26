@@ -40,3 +40,24 @@ export function SubstituirCaracteresProibidos(value) {
 export function VerficarSeNumero(value) {
     return !(Number.isNaN(Number(value)));
 }
+/**
+ * 
+ * @param {'default' | 'custom' | 'random' | 'off' } paleta
+ */
+export function GerarCor(paleta){
+    if (paleta === 'default'){
+
+    }
+    else if (paleta === 'custom'){
+
+    }
+    else if (paleta === 'random'){
+        //Gera uma cor aleatória
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+    
+    return 'rgb(255, 255, 255)'; // Branco como padrão
+}

@@ -90,7 +90,6 @@ header {
     max-height: 425px;
     overflow-y: auto;
     overflow-x: hidden;
-    border: #000 solid 2px;
     padding: 10px;
   }
 
@@ -283,8 +282,9 @@ header {
   flex-direction: row;
   justify-content: center;
   justify-content: space-between;
-  margin: 10px 0 0 0;
   width: auto;
+  border-top: 2px solid #000;
+  padding-top: 10px;
 
   .adicionar-item, .mudar-formato-add {
     width: 45px;

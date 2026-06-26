@@ -80,7 +80,6 @@ export function iniciarConfigSeletor(container_seletor_cor, container_iro_picker
             
             //Altera a cor do item na roleta e a cor do texto baseado na cor do fundo
             CustomItem.alterarCor(dados_roleta.roleta, dados_roleta.props, cor_preview_atual.style.backgroundColor, cor_preview_atual.id.split("-").at(-1));
-            CustomItem.Luminancia(dados_roleta.roleta, estado.seletor_cor.color.rgb, dados_roleta.props, cor_preview_atual.id.split("-").at(-1));
         }
     });
     //#endregion

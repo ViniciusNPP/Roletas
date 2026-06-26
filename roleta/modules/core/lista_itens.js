@@ -1,12 +1,13 @@
 import * as CustomItem from '../components/customização-itens.js';
-import * as Roleta from '../components/roleta-config.js';
 import * as Util from '../components/utils.js';
+import * as InputText from '../components/input-by-text.js';
 
 export function iniciarEventosItens(container_itens, botao_adicionar, dados_roleta) {
     //dados_roleta contém { roleta, props, peso_total }
 
     const container_pai = container_itens.parentElement;
     const input_add = container_pai.querySelector("#add-item-texto");
+    
     //#region Adicionar / Remover
     //Adcionar item
     botao_adicionar.addEventListener('click', () => {
@@ -40,12 +41,11 @@ export function iniciarEventosItens(container_itens, botao_adicionar, dados_role
         input_add.classList.toggle('escondido');
         container_itens.classList.toggle('escondido');
 
-        const add_item_texto = container_pai.querySelector('#add-item-texto');
         //Verifica se o modo foi trocado para input via texto ou se está voltando para o modo normal
         //Se for para o modo de texto, passar os itens atuais para o input
         //Se for para o modo normal, pegar os itens do input e criar os itens na roleta
         if (container_itens.classList.contains('escondido')) {
-            add_item_texto.value = ""; //Limpa o input
+            input_add.value = ""; //Limpa o input
 
             //Dicionário com os dados
             const dados_input = {
@@ -55,57 +55,43 @@ export function iniciarEventosItens(container_itens, botao_adicionar, dados_role
 
             //Adiciona os dados no input
             for (const [key, value] of dados_input.nomes.entries()){
-                add_item_texto.value += `${value}; ${dados_input.chances[key]}\n`;
+                input_add.value += `${value}; ${dados_input.chances[key]}\n`;
             }
         }
-        else {
-            const items = input_add.value.split("\n");
-            let itens_novos = {
-                nomes: [],
-                chances: []
-            }
+    });
+    //#endregion
+    //#region Digitos text input
+    input_add;addEventListener('input', (e) => {
+        const itens_texto = e.target.value.split("\n").filter(linha => linha.trim() !== ""); //Pega cada linha do input, removendo as linhas vazias
+        const items = dados_roleta.props.items;
 
-            //Valida os dados do input e os separa em nomes e chances
-            items.forEach(it => {
-                const item_dividido = it.split(";");
-                if (item_dividido[0] === "" || !item_dividido[1]) return; //caso o formato do item seja inválido, ele é ignorado
-
-                //Se tiver caracter proibido o substitui por " "
-                if (Util.VerficarCaracterProibido(item_dividido[0])) {
-                    item_dividido[0] = Util.SubstituirCaracteresProibidos(item_dividido[0]);
-                }
-                
-                //Verifica se a chance é um número e válido, se não for definine 1
-                if (item_dividido[1].trim() === "" || !Util.VerficarSeNumero(item_dividido[1])) item_dividido[1] = "1";
-                else if (item_dividido[1].length > 3) {
-                    //Limita a 3 caracteres
-                    item_dividido[1] = item_dividido[1].trim().slice(0, 3);
-                }
-                
-                itens_novos.nomes.push(item_dividido[0]);
-                itens_novos.chances.push(item_dividido[1]);
-            });
-
-            //Adiciona os itens novos e altera os itens antigos
-            for (const [key, value] of itens_novos.nomes.entries()) {
-                //Altera os itens já existentes
-                if (dados_roleta.props.items[key]) {
-                    //Verifica se os dados são diferentes para evitar alterações desnecessárias
-                    if (dados_roleta.props.items[key].label !== value){
-                        CustomItem.alterarNome(dados_roleta.roleta, dados_roleta.props, value, dados_roleta.props.items[key].value, container_itens);
-                    }
-                    if (dados_roleta.props.items[key].weight !== parseInt(itens_novos.chances[key])){
-                        CustomItem.alterarChance(dados_roleta.roleta, dados_roleta.props, parseInt(itens_novos.chances[key]), dados_roleta.props.items[key].value, container_itens);
-                    }
-                }
-                //Adiciona os itens novos
-                else {
-                    dados_roleta.props = Roleta.addToProps(dados_roleta.props, value, parseInt(itens_novos.chances[key]), Util.gerarId()); //atualiza os props com o novo item
-                    CustomItem.adicionarItem(dados_roleta.roleta, dados_roleta.props, container_itens, false, dados_roleta.props.items[key]); //adiciona o novo item na roleta
-                    dados_roleta.peso_total += parseInt(itens_novos.chances[key]); //atualiza o peso total
-                }
-            }
+        if (itens_texto.length < 2) return;
+        //Se o tamanho for igual ao props.items, significa que editou os itens e não adicionou/removeu
+        //Necessário apenas atualizar os itens
+        //console.log("Itens no input: " + itens_texto.length);
+        //console.log("Itens na roleta: " + items.length);
+        if (itens_texto.length == items.length) {
+            //console.log("Atualizando itens");
+            InputText.atualizarItem(dados_roleta, container_itens, items, itens_texto);
+            return;
         }
+        //Se for maior, significa que um item foi adicionado
+        else if (itens_texto.length > items.length) {
+            //console.log("Adicionando itens");
+            InputText.adicionarItem(dados_roleta, container_itens, items, itens_texto);
+            return;
+        }
+
+        //Se for menor, significa que um item foi removido
+        else if (itens_texto.length < items.length) {
+            InputText.removerItem(dados_roleta, container_itens, items, itens_texto);
+            return;
+        }
+    });
+    //#endregion
+    //#region Validação text input
+    input_add.addEventListener('keydown', (e) => {
+        if (Util.VerficarCaracterProibido(e.key, ";")) e.preventDefault();
     });
     //#endregion
 
