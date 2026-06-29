@@ -211,12 +211,59 @@ header {
   padding: 10px;
 }
 
+.config-child{
+  margin-bottom: 10px;
+}
+
+.same-line{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 28px;
+  height: 25px;
+  border: solid 2px #000;
+  transition: transform 0.25s ease, border 0.25s ease;  
+}
+
+input[type="checkbox"]:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+input[type="checkbox"]:checked {
+  background-color: #000;
+}
+
+input[type="checkbox"]:active {
+  transform: scale(0.95);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  border: 2px solid #000;
+  border-radius: 25%;
+  width: 25px;
+  height: 25px;
+  font-size: 15px;
+  text-align: center;
+}
+
 .item {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 
-  .chance,
   .cor-preview {
     border: 2px solid #000;
     border-radius: 25%;
@@ -235,10 +282,8 @@ header {
     transform: scale(1.05);
   }
 
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  .chance{
+    margin-right: auto;
   }
 
   .input-cor-preview {
@@ -252,14 +297,6 @@ header {
     margin-right: 10px;
     font-size: 15px;
     padding-left: 5px;
-  }
-
-  .chance {
-    width: 25px;
-    height: 25px;
-    margin-right: auto;
-    font-size: 15px;
-    text-align: center;
   }
 
   .excluir-item {

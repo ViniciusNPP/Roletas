@@ -2,6 +2,7 @@ import * as Roleta from '../components/roleta-config.js';
 import * as CustomItem from '../components/customização-itens.js';
 import * as easing from '../../libs/easing.js';
 import * as Util from '../components/utils.js';
+import { CONFIG_GL } from './configuracoes.js';
 
 const props = Roleta.createProps();
 
@@ -20,14 +21,14 @@ export function iniciarRoleta(container, container_itens) {
 }
 
 export function roletar(dados, container) {
-    //Configurações e animação
-    const ease = easing.easeOutQuad;
-    let duration = 5000;
-
     Roleta.aplicarConfigRoleta(dados.roleta);
 
     //Evento de Girar
     container.querySelector('.botao-roleta').addEventListener('click', () => {
+        //Configurações e animação
+        const ease = CONFIG_GL.configs.easeMode;
+        const duration = CONFIG_GL.configs.duration;
+
         Roleta.girarRoleta(dados.roleta, ease, duration, dados.props, dados.peso_total);
     });
 }

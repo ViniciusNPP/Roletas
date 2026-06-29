@@ -23,6 +23,7 @@ const string_caracteresProbidos = caracteresProibidos.map(c => {
 const regex = new RegExp(`[${string_caracteresProbidos.join('')}]`, 'g');
 
 export function VerficarCaracterProibido(value, desconsiderar = "") {
+    //console.log("Valor: ", value)
     const caracteresProibidosFiltrados = caracteresProibidos.filter(c => c !== desconsiderar);
     
     if (value.lenght <= 1) return caracteresProibidosFiltrados.includes(value);

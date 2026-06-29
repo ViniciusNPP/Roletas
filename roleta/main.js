@@ -1,6 +1,7 @@
 import { iniciarRoleta, roletar } from './modules/core/roleta.js';
 import { iniciarEventosItens } from './modules/core/lista_itens.js';
 import { iniciarConfigSeletor } from './modules/components/seletor_config.js';
+import { iniciarOpcoesAnimacoes } from './modules/core/configuracoes.js';
 
 //DOM Elements
 const container = document.querySelector('.roleta-container');
@@ -20,3 +21,6 @@ iniciarEventosItens(container_itens, botao_adicionar, dados_roleta);
 
 // 3. Passa os dados para o Seletor de Cores funcionar
 iniciarConfigSeletor(container_seletor_cor, container_iro_picker, container_itens, dados_roleta);
+
+// 4. Inicializa as opções do select de animações das configurações
+iniciarOpcoesAnimacoes();
