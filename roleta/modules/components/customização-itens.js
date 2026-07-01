@@ -26,7 +26,7 @@ export function alterarNome(roleta, props, nome_novo, id, container_items) {
     input.setAttribute('value', nome_novo);
 
     roleta.init(props); //Reinicializa a roleta para atualizar os nomes dos itens
-    Roleta.aplicarConfigRoleta(roleta);
+    Roleta.aplicarConfigRoleta();
 }
 
 export function alterarChance(roleta, props, chance_nova, id, container_items) {
@@ -39,7 +39,7 @@ export function alterarChance(roleta, props, chance_nova, id, container_items) {
     input.setAttribute('value', chance_nova);
 
     roleta.init(props); //Reinicializa a roleta para atualizar as chances dos itens
-    Roleta.aplicarConfigRoleta(roleta);
+    Roleta.aplicarConfigRoleta();
 }
 
 export function excluirItem(roleta, props, container, id) {
@@ -60,7 +60,7 @@ export function excluirItem(roleta, props, container, id) {
     }
 
     roleta.init(props); //Reinicializa a roleta para atualizar os itens
-    Roleta.aplicarConfigRoleta(roleta);
+    Roleta.aplicarConfigRoleta();
 }
 
 export function Luminancia(roleta, obj_rgb, props, id) {
@@ -72,7 +72,7 @@ export function Luminancia(roleta, obj_rgb, props, id) {
         luminancia > 128 ? item.labelColor = '#000000' : item.labelColor = '#ffffff';
         
         roleta.init(props);
-        Roleta.aplicarConfigRoleta(roleta);
+        //Roleta.aplicarConfigRoleta();
     }
 }
 
@@ -115,7 +115,7 @@ export function adicionarItem(roleta, props, container, gerar_item_automatico = 
     }
 
     roleta.init(props);
-    Roleta.aplicarConfigRoleta(roleta);
+    Roleta.aplicarConfigRoleta();
 }
 
 export function adicionarMultiplos(roleta, props, container, novos_itens, cores) {

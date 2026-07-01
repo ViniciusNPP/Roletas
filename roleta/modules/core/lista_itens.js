@@ -1,20 +1,21 @@
 import * as CustomItem from '../components/customização-itens.js';
 import * as Util from '../components/utils.js';
 import * as InputText from '../components/input-by-text.js';
+import { DADOS_ROLETA } from './roleta.js';
 
-export function iniciarEventosItens(container_itens, botao_adicionar, dados_roleta) {
-    //dados_roleta contém { roleta, props, peso_total }
+export function iniciarEventosItens(container_itens, botao_adicionar) {
+    //console.log("Roleta: ", DADOS_ROLETA.roleta)
 
     const container_pai = container_itens.parentElement;
     const input_add = container_pai.querySelector("#add-item-texto");
-    
+
     //#region Adicionar / Remover
     //Adcionar item
     botao_adicionar.addEventListener('click', () => {
         if (!input_add.classList.contains('escondido')) return; //Não permite criar items apertando o botão caso o outro modo esteja aberto
-        
-        CustomItem.adicionarItem(dados_roleta.roleta, dados_roleta.props, container_itens);
-        dados_roleta.peso_total += 1;
+
+        CustomItem.adicionarItem(DADOS_ROLETA.roleta, DADOS_ROLETA.props, container_itens);
+        DADOS_ROLETA.peso_total += 1;
     });
 
     //Excluir Item
@@ -25,12 +26,12 @@ export function iniciarEventosItens(container_itens, botao_adicionar, dados_role
 
         const btn_excluir = target.closest('.excluir-item');
         const seletor_cor_aberto = document.querySelector('#container-color-picker').childElementCount == 0;
-        
+
         if (btn_excluir && seletor_cor_aberto) {
-            if (dados_roleta.props.items.length <= 2) return;
+            if (DADADOS_ROLETA.props.items.length <= 2) return;
 
             const id_item = container.id.split("-")[1];
-            CustomItem.excluirItem(dados_roleta.roleta, dados_roleta.props, container, id_item);
+            CustomItem.excluirItem(DADADOS_ROLETA.roleta, DADOS_ROLETA.props, container, id_item);
         }
     });
     //#endregion
@@ -49,21 +50,21 @@ export function iniciarEventosItens(container_itens, botao_adicionar, dados_role
 
             //Dicionário com os dados
             const dados_input = {
-                nomes: dados_roleta.props.items.map(item => item.label),
-                chances: dados_roleta.props.items.map(item => item.weight)
+                nomes: DADOS_ROLETA.props.items.map(item => item.label),
+                chances: DADOS_ROLETA.props.items.map(item => item.weight)
             }
 
             //Adiciona os dados no input
-            for (const [key, value] of dados_input.nomes.entries()){
+            for (const [key, value] of dados_input.nomes.entries()) {
                 input_add.value += `${value}; ${dados_input.chances[key]}\n`;
             }
         }
     });
     //#endregion
     //#region Digitos text input
-    input_add;addEventListener('input', (e) => {
+    input_add; addEventListener('input', (e) => {
         const itens_texto = e.target.value.split("\n").filter(linha => linha.trim() !== ""); //Pega cada linha do input, removendo as linhas vazias
-        const items = dados_roleta.props.items;
+        const items = DADOS_ROLETA.props.items;
 
         if (itens_texto.length < 2) return;
         //Se o tamanho for igual ao props.items, significa que editou os itens e não adicionou/removeu
@@ -72,19 +73,19 @@ export function iniciarEventosItens(container_itens, botao_adicionar, dados_role
         //console.log("Itens na roleta: " + items.length);
         if (itens_texto.length == items.length) {
             //console.log("Atualizando itens");
-            InputText.atualizarItem(dados_roleta, container_itens, items, itens_texto);
+            InputText.atualizarItem(DADADOS_ROLETA, container_itens, items, itens_texto);
             return;
         }
         //Se for maior, significa que um item foi adicionado
         else if (itens_texto.length > items.length) {
             //console.log("Adicionando itens");
-            InputText.adicionarItem(dados_roleta, container_itens, items, itens_texto);
+            InputText.adicionarItem(DADADOS_ROLETA, container_itens, items, itens_texto);
             return;
         }
 
         //Se for menor, significa que um item foi removido
         else if (itens_texto.length < items.length) {
-            InputText.removerItem(dados_roleta, container_itens, items, itens_texto);
+            InputText.removerItem(DADADOS_ROLETA, container_itens, items, itens_texto);
             return;
         }
     });
@@ -146,15 +147,15 @@ export function iniciarEventosItens(container_itens, botao_adicionar, dados_role
                 value = 1;
             }
 
-            const chance_velha = dados_roleta.props.items.find(item => item.value == id_item).weight;
+            const chance_velha = DADOS_ROLETA.props.items.find(item => item.value == id_item).weight;
             if (chance_velha == target.value) return;
 
-            CustomItem.alterarChance(dados_roleta.roleta, dados_roleta.props, parseInt(value), id_item, container_itens);
-            dados_roleta.peso_total += parseInt(value) - parseInt(chance_velha);
+            CustomItem.alterarChance(DADADOS_ROLETA.roleta, DADOS_ROLETA.props, parseInt(value), id_item, container_itens);
+            DADOS_ROLETA.peso_total += parseInt(value) - parseInt(chance_velha);
         }
 
         if (target.classList.contains('nome-item')) {
-            const nome_antigo = dados_roleta.props.items.find(item => item.value == id_item).label;
+            const nome_antigo = DADOS_ROLETA.props.items.find(item => item.value == id_item).label;
             if (value === "") {
                 target.value = nome_antigo;
                 return;
@@ -162,7 +163,7 @@ export function iniciarEventosItens(container_itens, botao_adicionar, dados_role
             if (value === nome_antigo) return;
 
             const novo_nome = value.length > 20 ? value.slice(0, 18) + "..." : value;
-            CustomItem.alterarNome(dados_roleta.roleta, dados_roleta.props, novo_nome, id_item, container_itens);
+            CustomItem.alterarNome(DADADOS_ROLETA.roleta, DADOS_ROLETA.props, novo_nome, id_item, container_itens);
         }
     }, true);
     //#endregion

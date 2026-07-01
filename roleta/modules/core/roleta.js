@@ -4,31 +4,31 @@ import * as easing from '../../libs/easing.js';
 import * as Util from '../components/utils.js';
 import { CONFIG_GL } from './configuracoes.js';
 
-const props = Roleta.createProps();
+export let DADOS_ROLETA = {
+    roleta: null,
+    props: null,
+    peso_total: 0
+};
 
 export function iniciarRoleta(container, container_itens) {
     //Inicialização
-    const roleta = Roleta.createRoleta(container, props);
+    DADOS_ROLETA.props = Roleta.createProps();
+    DADOS_ROLETA.roleta = Roleta.createRoleta(container, DADOS_ROLETA.props);
 
     //Cria os itens na interface e calcula o peso
-    props.items.forEach(item => {
+    DADOS_ROLETA.props.items.forEach(item => {
         CustomItem.criarItem(container_itens, item.label, item.weight, item.value, item.backGroundColor);
     });
-    let peso_total = props.items.reduce((total, item) => total + item.weight, 0);
-
-    //Retorna as variáveis que outros arquivos vão precisar
-    return { roleta, props, peso_total };
+    DADOS_ROLETA.peso_total = DADOS_ROLETA.props.items.reduce((total, item) => total + item.weight, 0);
 }
 
-export function roletar(dados, container) {
-    Roleta.aplicarConfigRoleta(dados.roleta);
-
+export function roletar(container) {
     //Evento de Girar
     container.querySelector('.botao-roleta').addEventListener('click', () => {
         //Configurações e animação
         const ease = CONFIG_GL.configs.easeMode;
         const duration = CONFIG_GL.configs.duration;
 
-        Roleta.girarRoleta(dados.roleta, ease, duration, dados.props, dados.peso_total);
+        Roleta.girarRoleta(DADOS_ROLETA.roleta, ease, duration, DADOS_ROLETA.props, DADOS_ROLETA.peso_total);
     });
 }

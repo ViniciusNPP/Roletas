@@ -1,7 +1,8 @@
-import { iniciarRoleta, roletar } from './modules/core/roleta.js';
+import { iniciarOpcoesAnimacoes } from './modules/core/configuracoes.js';
+import { DADOS_ROLETA, iniciarRoleta, roletar } from './modules/core/roleta.js';
 import { iniciarEventosItens } from './modules/core/lista_itens.js';
 import { iniciarConfigSeletor } from './modules/components/seletor_config.js';
-import { iniciarOpcoesAnimacoes } from './modules/core/configuracoes.js';
+import { aplicarConfigRoleta } from './modules/components/roleta-config.js';
 
 //DOM Elements
 const container = document.querySelector('.roleta-container');
@@ -11,16 +12,17 @@ const container_seletor_cor = document.querySelector('#color-picker');
 const container_iro_picker = document.querySelector('#container-color-picker');
 
 // 1. Inicia a lógica principal da Roleta (Isso devolve as variáveis importantes)
-const dados_roleta = iniciarRoleta(container, container_itens);
+iniciarRoleta(container, container_itens);
 
 //1.1. Inicia a lógica de girar e sortear os itens da roleta
-roletar(dados_roleta, container);
+roletar(container);
 
 // 2. Passa os dados da roleta para os Itens poderem editar (adicionar/excluir/alterar)
-iniciarEventosItens(container_itens, botao_adicionar, dados_roleta);
+iniciarEventosItens(container_itens, botao_adicionar);
 
 // 3. Passa os dados para o Seletor de Cores funcionar
-iniciarConfigSeletor(container_seletor_cor, container_iro_picker, container_itens, dados_roleta);
+iniciarConfigSeletor(container_seletor_cor, container_iro_picker, container_itens, DADOS_ROLETA);
 
 // 4. Inicializa as opções do select de animações das configurações
 iniciarOpcoesAnimacoes();
+aplicarConfigRoleta();

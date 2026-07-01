@@ -1,6 +1,8 @@
 import {Wheel} from 'https://cdn.jsdelivr.net/npm/spin-wheel@5.0.2/dist/spin-wheel-esm.js';
 import * as Util from './utils.js'
 import { alterarCor } from './customização-itens.js';
+import { CONFIG_GL } from '../core/configuracoes.js';
+import { DADOS_ROLETA } from '../core/roleta.js';
 
 let girando = false;
 let props = {
@@ -22,13 +24,13 @@ let props = {
     }
 }
 
-export function aplicarConfigRoleta(roleta, isInteractive = false, itemLabelRadius = 0.6, itemLabelRadiusMax = 0.23, itemLabelFontSizeMax = 30, itemLabelAlign = 'center') {
-    roleta.isInteractive = isInteractive
-    roleta.itemLabelRadius = itemLabelRadius;
-    roleta.itemLabelRadiusMax = itemLabelRadiusMax;
-    roleta.itemLabelFontSizeMax = itemLabelFontSizeMax;
-    roleta.itemLabelAlign = itemLabelAlign;
-    roleta.rotation = 90;
+export function aplicarConfigRoleta(itemLabelRadius = 0.6, itemLabelRadiusMax = 0.23, itemLabelFontSizeMax = 30, itemLabelAlign = 'center') {
+    DADOS_ROLETA.roleta.isInteractive = CONFIG_GL.configs.isInteractive;
+    DADOS_ROLETA.roleta.itemLabelRadius = itemLabelRadius;
+    DADOS_ROLETA.roleta.itemLabelRadiusMax = itemLabelRadiusMax;
+    DADOS_ROLETA.roleta.itemLabelFontSizeMax = itemLabelFontSizeMax;
+    DADOS_ROLETA.roleta.itemLabelAlign = itemLabelAlign;
+    DADOS_ROLETA.roleta.rotation = 90;
 }
 
 export function getProps(){
